@@ -5,9 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ACLS Timer Tool</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
       padding: 20px;
+      width: 100%;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -19,15 +25,18 @@
       margin-bottom: 15px;
       flex-wrap: wrap;
       gap: 10px;
+      width: 100%;
     }
     .split-row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 80px;
+      gap: 40px;
       width: 100%;
-      max-width: 1000px;
     }
     .column {
+      flex: 1;
+      min-width: 250px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,7 +48,8 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      width: 180px;
+      width: 100%;
+      max-width: 180px;
     }
     .selected {
       background-color: black !important;
@@ -64,6 +74,7 @@
       white-space: pre-line;
       border-top: 1px solid #ccc;
       padding-top: 10px;
+      width: 100%;
       max-width: 1000px;
       text-align: left;
     }
@@ -71,16 +82,22 @@
       font-size: 18px;
       color: #333;
     }
+    .header-text {
+      font-size: 32px;
+      background-color: #e53935;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
-<!-- 標題 -->
+<!-- 標題與時間 -->
 <div class="center-row">
-  <div class="header-text" style="font-size:32px; background-color:#e53935; color:white; padding:10px 20px; border-radius:8px;">ACLS Timer Tool</div>
+  <div class="header-text">ACLS Timer Tool</div>
 </div>
-
-<!-- 時間 -->
 <div class="center-row">
   <div id="clock"></div>
 </div>
@@ -89,19 +106,19 @@
 <div class="center-row">
   <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
   <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
-  <input type="number" id="ageInput" placeholder="" style="width:60px; font-size:14px; padding:4px;" />
+  <input type="number" id="ageInput" style="width:60px; font-size:14px; padding:4px;" />
   <span class="input-label">Y</span>
 </div>
 
-<!-- 藥物與電擊紀錄 -->
+<!-- 次數紀錄 -->
 <div class="center-row" id="countInfo">
-  Epinephrine (Epi): <span id="epiCount">0</span> |
-  Amiodarone (Amio): <span id="amioCount">0</span> |
-  Lidocaine (Lido): <span id="lidoCount">0</span> |
+  Epinephrine: <span id="epiCount">0</span> |
+  Amiodarone: <span id="amioCount">0</span> |
+  Lidocaine: <span id="lidoCount">0</span> |
   Shock: <span id="shockCount">0</span>
 </div>
 
-<!-- 按鈕區 -->
+<!-- 按鈕區域 -->
 <div class="split-row">
   <div class="column">
     <button class="red" onclick="startCPR()">CPR</button>
@@ -145,17 +162,12 @@ function updateClock() {
 }
 setInterval(updateClock, 1000); updateClock();
 
-function getCurrentTimeStr() {
-  const now = new Date();
-  return now.toLocaleTimeString();
-}
-
 function recordEvent(event) {
   const now = new Date();
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
-  const log = document.getElementById("log");
-  log.innerText += `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString()}] ${event}\n`;
+  document.getElementById("log").innerText +=
+    `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString()}] ${event}\n`;
 }
 
 function startCPR() {
@@ -165,24 +177,29 @@ function startCPR() {
   timers.push(setTimeout(() => alert("10秒心律分析"), 110000));
   timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
 }
+
 function stopCPR() {
   recordEvent("CPR 停止");
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
   timers = [];
 }
+
 function aedAnalyze() {
   recordEvent("AED 分析開始（倒數 10 秒）");
   setTimeout(() => recordEvent("AED 分析結束"), 10000);
 }
+
 function switchCPR() {
   recordEvent("CPR 換人");
   setTimeout(() => alert("2分鐘已到，請考慮 CPR 換人"), 120000);
 }
+
 function giveEpinephrine() {
   alert("1mg IVP");
   recordEvent("Epinephrine 給藥");
   document.getElementById("epiCount").innerText = ++epiCount;
 }
+
 function giveAmiodarone() {
   if (++amioCount === 1) {
     alert("300mg IVP (考慮Lidocaine?)");
@@ -190,12 +207,12 @@ function giveAmiodarone() {
   } else if (amioCount === 2) {
     alert("150mg IVP");
     recordEvent("Amiodarone 150mg 給藥");
-    const btn = document.getElementById("amioBtn");
-    btn.disabled = true;
-    btn.style.opacity = 0.5;
+    document.getElementById("amioBtn").disabled = true;
+    document.getElementById("amioBtn").style.opacity = 0.5;
   }
   document.getElementById("amioCount").innerText = amioCount;
 }
+
 function giveLidocaine() {
   if (++lidoCount === 1) {
     alert("1-1.5mg/kg IVP");
@@ -203,37 +220,41 @@ function giveLidocaine() {
   } else if (lidoCount === 2) {
     alert("0.5-0.75mg/kg IVP");
     recordEvent("Lidocaine 維持劑量");
-    const btn = document.getElementById("lidoBtn");
-    btn.disabled = true;
-    btn.style.opacity = 0.5;
+    document.getElementById("lidoBtn").disabled = true;
+    document.getElementById("lidoBtn").style.opacity = 0.5;
   }
   document.getElementById("lidoCount").innerText = lidoCount;
 }
+
 function recordShock() {
   recordEvent("Shock!");
   document.getElementById("shockCount").innerText = ++shockCount;
 }
+
 function recordEndoTube() {
   const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
   if (cm && ["19","20","21","22","23"].includes(cm)) {
     recordEvent(`Fix ${cm}cm`);
   }
 }
+
 function resetLog() {
   if (confirm("確定要清除所有紀錄？")) {
     document.getElementById("log").innerText = "";
     epiCount = amioCount = lidoCount = shockCount = 0;
     ["epiCount", "amioCount", "lidoCount", "shockCount"].forEach(id => document.getElementById(id).innerText = "0");
-    document.getElementById("amioBtn").disabled = false;
-    document.getElementById("amioBtn").style.opacity = 1;
-    document.getElementById("lidoBtn").disabled = false;
-    document.getElementById("lidoBtn").style.opacity = 1;
+    ["amioBtn", "lidoBtn"].forEach(id => {
+      const btn = document.getElementById(id);
+      btn.disabled = false;
+      btn.style.opacity = 1;
+    });
     startTime = null;
     timers.forEach(t => clearTimeout(t) || clearInterval(t));
     timers = [];
     document.querySelectorAll('.toggled').forEach(btn => btn.classList.remove('toggled'));
   }
 }
+
 function toggleGender(selected) {
   const maleBtn = document.getElementById("maleBtn");
   const femaleBtn = document.getElementById("femaleBtn");
@@ -245,6 +266,7 @@ function toggleGender(selected) {
     maleBtn.classList.remove('selected');
   }
 }
+
 function toggleMarker(btn) {
   btn.classList.toggle('toggled');
 }
