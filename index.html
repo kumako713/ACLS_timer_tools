@@ -87,32 +87,24 @@
   <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
   <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
   <input type="number" id="ageInput" style="width:60px;" />
-  <span class="input-label">Y</span>
+  <span class="input-label">years old</span>
 </div>
 
-<!-- 其他處置欄位 -->
-<div class="column" style="align-items: flex-start;">
-    <label for="otherNotes" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Other treatments</label>
-    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-</div> 
-
-<!-- 藥物與 Shock 計數 + 病史與過敏史輸入 -->
+<!-- 給藥與處置紀錄區塊 -->
 <div class="split-row">
   <div class="column" style="align-items: flex-start;">
     <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
     <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
     <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
-    <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
+    <div><strong>⚡️Shock⚡️:</strong> <span id="shockCount">0</span></div>
   </div>
-  <div class="center-row" style="flex-direction: column; align-items: flex-start; width: 100%; max-width: 600px;">
-    <label for="history" style="font-weight: bold; margin-bottom: 5px;">Medical history/ Allergy</label>
+  <div class="column" style="align-items: flex-start;">
+    <label for="otherNotes" style="font-weight: bold; margin-bottom: 5px;">Other Treatments</label>
+    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+    <label for="history" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Medical History/ Allergy</label>
     <textarea id="history" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
   </div>
 </div>
-
-<!-- 空一列區隔 -->
-<div class="center-row" style="height: 20px;"></div>
-
 
 <!-- 操作按鈕與5H5T -->
 <div class="split-row">
@@ -122,11 +114,11 @@
     <button class="red" onclick="switchCPR()">Switch CPR</button>
     <button class="shoke" onclick="recordShock()">⚡️Shock⚡️</button>
     <button class="darkred" onclick="stopCPR()">Stop CPR</button>
-    <button class="yellow" onclick="giveEpinephrine()">Epi</button>
-    <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amio</button>
-    <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lido</button>
-    <button class="green" onclick="recordEvent('IV')">IV</button>
-    <button class="green" onclick="recordEvent('IO')">IO</button>
+    <button class="yellow" onclick="giveEpinephrine()">Epi.</button>
+    <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amio.</button>
+    <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lido.</button>
+    <button class="green" onclick="recordEvent('IV')">I.V.</button>
+    <button class="green" onclick="recordEvent('IO')">I.O.</button>
     <button class="green" onclick="recordEndoTube()">Endo</button>
   </div>
   <div class="column">
@@ -137,16 +129,14 @@
     <button class="brown" onclick="toggleMarker(this)">Hypo/Hyperkalemia</button>
     <button class="orange" onclick="toggleMarker(this)">Thrombosis/Coronary</button>
     <button class="orange" onclick="toggleMarker(this)">Thrombosis/Pulmonary</button>
+    <button class="orange" onclick="toggleMarker(this)">Tamponade</button>
     <button class="orange" onclick="toggleMarker(this)">Toxins</button>
     <button class="orange" onclick="toggleMarker(this)">Tension pneumothorax</button>
-    <button class="orange" onclick="toggleMarker(this)">Tamponade</button>
   </div>
 </div>
 
-<!-- 空一列區隔 -->
+<!-- 空一列區隔 + ROSC/Reset -->
 <div class="center-row" style="height: 20px;"></div>
-
-<!-- ROSC 與 Reset 按鈕 -->
 <div class="center-row">
   <div style="width: 45%; display: flex; justify-content: center;">
     <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
@@ -156,17 +146,19 @@
   </div>
 </div>
 
-
 <!-- 紀錄區 -->
 <div id="log"></div>
 
+<!-- JavaScript 功能 -->
 <script>
 let startTime = null;
 let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 let timers = [];
 
 function updateClock() {
-  document.getElementById("clock").innerText = "當前時間：" + new Date().toLocaleString('zh-TW', { hour12: false });
+  const now = new Date();
+  document.getElementById("clock").innerText =
+    "當前時間：" + now.toLocaleString('zh-TW', { hour12: false });
 }
 setInterval(updateClock, 1000); updateClock();
 
@@ -174,8 +166,9 @@ function recordEvent(event) {
   const now = new Date();
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
-  document.getElementById("log").innerText +=
-    `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString('zh-TW', { hour12: false })}] ${event}\n`;
+  const timeStamp = `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}]`;
+  const nowTime = `[${now.toLocaleTimeString('zh-TW', { hour12: false })}]`;
+  document.getElementById("log").innerText += `${timeStamp} ${nowTime} ${event}\n`;
 }
 
 function startCPR() {
