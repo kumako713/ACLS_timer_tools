@@ -90,12 +90,24 @@
   <span class="input-label">Y</span>
 </div>
 
-<!-- 給藥次數 -->
+<!-- 病史與過敏史輸入 -->
+<div class="center-row" style="flex-direction: column; align-items: flex-start; width: 100%; max-width: 600px;">
+  <label for="history" style="font-weight: bold; margin-bottom: 5px;">病史、過敏史</label>
+  <textarea id="history" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+</div>
+
+<!-- 給藥與電擊次數紀錄 -->
 <div class="center-row" id="countInfo" style="flex-direction: column; align-items: flex-start;">
   <div>Epinephrine: <span id="epiCount">0</span></div>
   <div>Amiodarone: <span id="amioCount">0</span></div>
   <div>Lidocaine: <span id="lidoCount">0</span></div>
   <div>Shock: <span id="shockCount">0</span></div>
+</div>
+
+<!-- 其他處置輸入 -->
+<div class="center-row" style="flex-direction: column; align-items: flex-start; width: 100%; max-width: 600px;">
+  <label for="otherNotes" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">其他處置</label>
+  <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
 </div>
 
 <!-- 操作按鈕與5H5T -->
