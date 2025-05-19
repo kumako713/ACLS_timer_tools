@@ -40,6 +40,7 @@
     .gray { background-color: #b0bec5; color: black; }
     .black { background-color: #000000; color: white; }
     .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
+    .darkred { background-color: #8B0000; color: white; }
     #log {
       margin-top: 20px;
       white-space: pre-line;
@@ -72,10 +73,10 @@
 
 <div class="row">
   <button class="red" onclick="startCPR()">CPR</button>
-  <button class="red" onclick="stopCPR()">Stop CPR</button>
   <button class="red" onclick="aedAnalyze()">AED Analyze</button>
   <button class="red" onclick="switchCPR()">Switch CPR</button>
   <button class="shoke" onclick="recordShock()">Shock!</button>
+  <button class="darkred" onclick="stopCPR()">Stop CPR</button>
 </div>
 
 <div class="row">
@@ -138,9 +139,7 @@
 
   function recordEvent(event) {
     const now = getCurrentTime();
-    if (!startTime) {
-      startTime = now;
-    }
+    if (!startTime) startTime = now;
     const elapsed = formatTimeDiff(now - startTime);
     const absolute = formatAbsoluteTime(now);
     const log = document.getElementById("log");
@@ -197,9 +196,7 @@
   }
 
   function scheduleEpinephrineReminder() {
-    if (epiReminderTimer) {
-      clearTimeout(epiReminderTimer);
-    }
+    if (epiReminderTimer) clearTimeout(epiReminderTimer);
     epiReminderTimer = setTimeout(() => {
       alert("提醒：已過 4 分鐘，請考慮再次給予 Epinephrine！");
     }, 4 * 60 * 1000);
@@ -214,9 +211,7 @@
 
   function switchCPR() {
     recordEvent("CPR 換人");
-    if (cprSwitchTimer) {
-      clearTimeout(cprSwitchTimer);
-    }
+    if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
     cprSwitchTimer = setTimeout(() => {
       alert("提醒：2 分鐘已到，建議 CPR 換人！");
     }, 2 * 60 * 1000);
@@ -224,9 +219,7 @@
 
   function startCPR() {
     recordEvent("CPR 開始");
-    if (!startTime) {
-      startTime = new Date();
-    }
+    if (!startTime) startTime = new Date();
     triggerH5TReminder();
     setTimeout(() => startMetronome(100), 2000);
   }
@@ -240,9 +233,7 @@
   }
 
   function triggerH5TReminder() {
-    if (h5tReminderTimer) {
-      clearInterval(h5tReminderTimer);
-    }
+    if (h5tReminderTimer) clearInterval(h5tReminderTimer);
     h5tReminderTimer = setInterval(() => {
       alert("提醒：CPR 執行中，請考慮 5H5T？");
     }, 2 * 60 * 1000);
@@ -253,7 +244,7 @@
     if (audio) {
       audio.currentTime = 0;
       audio.play();
-      setTimeout(() => audio.pause(), 200);
+      setTimeout(() => audio.pause(), 500);
     }
   }
 
@@ -291,10 +282,10 @@
       document.getElementById("amioBtn").style.opacity = 1;
       document.getElementById("lidoBtn").disabled = false;
       document.getElementById("lidoBtn").style.opacity = 1;
-      if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
-      if (epiReminderTimer) clearTimeout(epiReminderTimer);
-      if (h5tReminderTimer) clearInterval(h5tReminderTimer);
       stopMetronome();
+      clearTimeout(cprSwitchTimer);
+      clearTimeout(epiReminderTimer);
+      clearInterval(h5tReminderTimer);
     }
   }
 </script>
