@@ -3,9 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACLS 記錄工具</title>
+  <title>ACLS Timer Tool</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #e53935;
+      color: white;
+      font-size: 32px;
+      padding: 10px;
+      border-radius: 8px;
+      gap: 10px;
+    }
+    .header img {
+      width: 32px;
+      height: 32px;
+    }
     button {
       padding: 10px 20px;
       font-size: 16px;
@@ -14,19 +33,43 @@
       color: white;
       cursor: pointer;
     }
-    .row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-    .red { background-color: #e53935; }       /* 亮紅色 */
-    .yellow { background-color: #fbc02d; color: black; }  /* 黃色 */
-    .green { background-color: #40e0d0; color: black; }   /* Tiffany 綠 */
-    .blue { background-color: #4fc3f7; color: black; }    /* 天空藍 */
-    .gray { background-color: #b0bec5; color: black; }    /* 淺灰色 */
-    #log { margin-top: 20px; white-space: pre-line; border-top: 1px solid #ccc; padding-top: 10px; }
-    #clock, #countInfo { font-size: 20px; margin-bottom: 10px; color: #333; }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .red { background-color: #e53935; }
+    .yellow { background-color: #fbc02d; color: black; }
+    .green { background-color: #40e0d0; color: black; }
+    .blue { background-color: #4fc3f7; color: black; }
+    .gray { background-color: #b0bec5; color: black; }
+    #log {
+      margin-top: 20px;
+      white-space: pre-line;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      text-align: left;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #clock, #countInfo {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
 
-<h2>ACLS 記錄工具</h2>
+<div class="header">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Star_of_life2.svg/2048px-Star_of_life2.svg.png" alt="star of life">
+  <span>ACLS Timer Tool</span>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Star_of_life2.svg/2048px-Star_of_life2.svg.png" alt="star of life">
+</div>
+
 <div id="clock"></div>
 <div id="countInfo">
   Epinephrine 次數：<span id="epiCount">0</span><br>
@@ -47,8 +90,9 @@
 </div>
 
 <div class="row">
-  <button class="green" onclick="recordEvent('On IV')">On IV/IO</button>
-  <button class="green" onclick="recordEvent('Endotracheal Intubation')">Endo tube</button>
+  <button class="green" onclick="recordEvent('IV')">IV</button>
+  <button class="green" onclick="recordEvent('IO')">IO</button>
+  <button class="green" onclick="recordEndoTube()">Endo tube</button>
 </div>
 
 <div class="row">
@@ -102,6 +146,11 @@
     const absolute = formatAbsoluteTime(now);
     const log = document.getElementById("log");
     log.innerText += `[${elapsed}] (${absolute}) ${event}\n`;
+  }
+
+  function recordEndoTube() {
+    alert("Fix 19-23 cm");
+    recordEvent("Endotracheal Intubation");
   }
 
   function giveEpinephrine() {
