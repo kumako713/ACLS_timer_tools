@@ -166,7 +166,7 @@ let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 let timers = [];
 
 function updateClock() {
-  document.getElementById("clock").innerText = "當前時間：" + new Date().toLocaleString();
+  document.getElementById("clock").innerText = "當前時間：" + new Date().toLocaleString('zh-TW', { hour12: false });
 }
 setInterval(updateClock, 1000); updateClock();
 
