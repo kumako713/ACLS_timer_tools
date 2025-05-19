@@ -98,6 +98,17 @@
     <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
     <div><strong>Shock️:</strong> <span id="shockCount">0</span></div>
   </div>
+  <!-- SpO2 & BT 垂直排列輸入欄位 -->
+<div style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 8px; gap: 6px;">
+  <div>
+    <label for="spo2Input" style="margin-right: 6px;">SpO₂</label>
+    <input id="spo2Input" type="text" placeholder="%" style="width: 80px;" />
+  </div>
+  <div>
+    <label for="btInput" style="margin-right: 16px;">BT</label>
+    <input id="btInput" type="text" placeholder="°C" style="width: 80px;" />
+  </div>
+</div>
   <div class="column" style="align-items: flex-start;">
     <label for="otherNotes" style="font-weight: bold; margin-bottom: 5px;">History/ Allergy</label>
     <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
