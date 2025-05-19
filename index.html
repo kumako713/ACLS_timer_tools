@@ -175,7 +175,7 @@ function recordEvent(event) {
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
   document.getElementById("log").innerText +=
-    `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString()}] ${event}\n`;
+    `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString('zh-TW', { hour12: false })}] ${event}\n`;
 }
 
 function startCPR() {
