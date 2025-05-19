@@ -140,14 +140,16 @@
 </div>
 
 <!-- ROSC 與 Reset 按鈕 -->
-<div class="center-row">
-  <div style="width: 45%; display: flex; justify-content: center;">
-    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-  </div>
-  <div style="width: 45%; display: flex; justify-content: center;">
+<div>
+  <div class="center-row">
+    <div style="width: 45%; display: flex; justify-content: center;">
+      <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+    </div>
+    <div style="width: 45%; display: flex; justify-content: center;">
     <button class="gray" onclick="resetLog()">Reset</button>
+    </div>
   </div>
-</div>
+</div>  
 
 <!-- 紀錄區 -->
 <div id="log"></div>
