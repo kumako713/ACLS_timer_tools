@@ -6,7 +6,20 @@
   <title>ACLS 記錄工具</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .red { background-color: #e53935; }       /* 亮紅色 */
+    .yellow { background-color: #fbc02d; color: black; }  /* 黃色 */
+    .green { background-color: #40e0d0; color: black; }   /* Tiffany 綠 */
+    .blue { background-color: #4fc3f7; color: black; }    /* 天空藍 */
+    .gray { background-color: #b0bec5; color: black; }    /* 淺灰色 */
     #log { margin-top: 20px; white-space: pre-line; border-top: 1px solid #ccc; padding-top: 10px; }
     #clock, #countInfo { font-size: 20px; margin-bottom: 10px; color: #333; }
   </style>
@@ -21,16 +34,30 @@
   Lidocaine 次數：<span id="lidoCount">0</span>
 </div>
 
-<button onclick="startCPR()">Start CPR</button>
-<button onclick="aedAnalyze()">AED Analyze</button>
-<button onclick="giveEpinephrine()">Epinephrine</button>
-<button onclick="giveAmiodarone()">Amiodarone</button>
-<button onclick="giveLidocaine()">Lidocaine</button>
-<button onclick="recordEvent('On IV')">On IV</button>
-<button onclick="recordEvent('Endotracheal Intubation')">Endo</button>
-<button onclick="switchCPR()">Switch CPR</button>
-<button onclick="recordEvent('ROSC')">ROSC</button>
-<button onclick="resetLog()">Reset</button>
+<div class="row">
+  <button class="red" onclick="startCPR()">Start CPR</button>
+  <button class="red" onclick="aedAnalyze()">AED Analyze</button>
+  <button class="red" onclick="switchCPR()">Switch CPR</button>
+</div>
+
+<div class="row">
+  <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
+  <button class="yellow" onclick="giveAmiodarone()">Amiodarone</button>
+  <button class="yellow" onclick="giveLidocaine()">Lidocaine</button>
+</div>
+
+<div class="row">
+  <button class="green" onclick="recordEvent('On IV')">On IV/IO</button>
+  <button class="green" onclick="recordEvent('Endotracheal Intubation')">Endo tube</button>
+</div>
+
+<div class="row">
+  <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+</div>
+
+<div class="row">
+  <button class="gray" onclick="resetLog()">Reset</button>
+</div>
 
 <div id="log"></div>
 
