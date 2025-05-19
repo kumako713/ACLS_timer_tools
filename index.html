@@ -76,8 +76,8 @@
 
 <div class="row">
   <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
-  <button class="yellow" onclick="giveAmiodarone()">Amiodarone</button>
-  <button class="yellow" onclick="giveLidocaine()">Lidocaine</button>
+  <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amiodarone</button>
+  <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lidocaine</button>
 </div>
 
 <div class="row">
@@ -143,11 +143,14 @@
   }
 
   function recordEndoTube() {
-    alert("確認 Fix 19-23 cm");
-    recordEvent("Endotracheal Intubation");
+    const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
+    if (cm && ["19", "20", "21", "22", "23"].includes(cm)) {
+      recordEvent(`Fix ${cm}cm`);
+    }
   }
 
   function giveEpinephrine() {
+    alert("1mg IVP");
     epiCount++;
     document.getElementById("epiCount").innerText = epiCount;
     recordEvent("Epinephrine 給藥");
@@ -156,14 +159,30 @@
 
   function giveAmiodarone() {
     amioCount++;
+    if (amioCount === 1) {
+      alert("300mg IVP (考慮Lidocaine?)");
+      recordEvent("Amiodarone 300mg 給藥");
+    } else if (amioCount === 2) {
+      alert("150mg IVP");
+      recordEvent("Amiodarone 150mg 給藥");
+      document.getElementById("amioBtn").disabled = true;
+      document.getElementById("amioBtn").style.opacity = 0.5;
+    }
     document.getElementById("amioCount").innerText = amioCount;
-    recordEvent("Amiodarone 給藥");
   }
 
   function giveLidocaine() {
     lidoCount++;
+    if (lidoCount === 1) {
+      alert("1-1.5mg/kg IVP");
+      recordEvent("Lidocaine 1-1.5mg/kg 給藥");
+    } else if (lidoCount === 2) {
+      alert("0.5-0.75mg/kg IVP");
+      recordEvent("Lidocaine 0.5-0.75mg/kg 給藥");
+      document.getElementById("lidoBtn").disabled = true;
+      document.getElementById("lidoBtn").style.opacity = 0.5;
+    }
     document.getElementById("lidoCount").innerText = lidoCount;
-    recordEvent("Lidocaine 給藥");
   }
 
   function scheduleEpinephrineReminder() {
@@ -246,6 +265,10 @@
       amioCount = 0;
       lidoCount = 0;
       startTime = null;
+      document.getElementById("amioBtn").disabled = false;
+      document.getElementById("amioBtn").style.opacity = 1;
+      document.getElementById("lidoBtn").disabled = false;
+      document.getElementById("lidoBtn").style.opacity = 1;
       if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
       if (epiReminderTimer) clearTimeout(epiReminderTimer);
       if (h5tReminderTimer) clearInterval(h5tReminderTimer);
