@@ -243,8 +243,8 @@ function startCPR() {
   recordEvent("CPR 開始");
   if (!startTime) startTime = new Date();
 
-  timers.push(setTimeout(() => alert("30秒心律分析"), 90000));
-  timers.push(setTimeout(() => alert("10秒心律分析"), 110000));
+  timers.push(setTimeout(() => alert("30秒後心律分析"), 90000));
+  timers.push(setTimeout(() => alert("10秒後心律分析"), 110000));
   timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
 
   if (!beatInterval) {
@@ -291,10 +291,10 @@ function giveAmiodarone() {
 function giveLidocaine() {
   if (++lidoCount === 1) {
     alert("1-1.5mg/kg IVP");
-    recordEvent("Lidocaine 初劑量");
+    recordEvent("Lidocaine 劑量(?)mg");
   } else if (lidoCount === 2) {
     alert("0.5-0.75mg/kg IVP");
-    recordEvent("Lidocaine 維持劑量");
+    recordEvent("Lidocaine 劑量(?)mg");
     const btn = document.getElementById("lidoBtn");
     btn.disabled = true;
     btn.style.opacity = 0.5;
