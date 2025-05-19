@@ -38,6 +38,7 @@
     .green { background-color: #40e0d0; color: black; }
     .blue { background-color: #4fc3f7; color: black; }
     .gray { background-color: #b0bec5; color: black; }
+    .black { background-color: #000000; color: white; }
     #log {
       margin-top: 20px;
       white-space: pre-line;
@@ -86,6 +87,7 @@
 
 <div class="row">
   <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+  <button class="black" onclick="toggleMetronome()">節拍器靜音/播放</button>
 </div>
 
 <div class="row">
@@ -99,6 +101,8 @@
   let cprSwitchTimer = null;
   let epiReminderTimer = null;
   let h5tReminderTimer = null;
+  let metronomeInterval = null;
+  let metronomeOn = false;
 
   let epiCount = 0;
   let amioCount = 0;
@@ -193,6 +197,7 @@
       startTime = new Date();
     }
     triggerH5TReminder();
+    setTimeout(() => startMetronome(100), 2000);
   }
 
   function triggerH5TReminder() {
@@ -202,6 +207,34 @@
     h5tReminderTimer = setInterval(() => {
       alert("提醒：CPR 執行中，請考慮 5H5T？");
     }, 2 * 60 * 1000);
+  }
+
+  function playBeep() {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = context.createOscillator();
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(1000, context.currentTime);
+    oscillator.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.1);
+  }
+
+  function startMetronome(bpm = 100) {
+    stopMetronome();
+    metronomeOn = true;
+    const interval = 60000 / bpm;
+    metronomeInterval = setInterval(() => {
+      if (metronomeOn) playBeep();
+    }, interval);
+  }
+
+  function stopMetronome() {
+    clearInterval(metronomeInterval);
+    metronomeInterval = null;
+  }
+
+  function toggleMetronome() {
+    metronomeOn = !metronomeOn;
   }
 
   function resetLog() {
@@ -217,6 +250,7 @@
       if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
       if (epiReminderTimer) clearTimeout(epiReminderTimer);
       if (h5tReminderTimer) clearInterval(h5tReminderTimer);
+      stopMetronome();
     }
   }
 </script>
