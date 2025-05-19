@@ -19,8 +19,8 @@
       display: inline-block;
     }
     button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 8px 16px;
+      font-size: 14px;
       border: none;
       border-radius: 6px;
       color: white;
@@ -39,6 +39,7 @@
     .blue { background-color: #4fc3f7; color: black; }
     .gray { background-color: #b0bec5; color: black; }
     .black { background-color: #000000; color: white; }
+    .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
     #log {
       margin-top: 20px;
       white-space: pre-line;
@@ -50,7 +51,7 @@
       margin-right: auto;
     }
     #clock, #countInfo {
-      font-size: 20px;
+      font-size: 18px;
       margin-bottom: 10px;
       color: #333;
     }
@@ -65,13 +66,16 @@
 <div id="countInfo">
   Epinephrine 次數：<span id="epiCount">0</span><br>
   Amiodarone 次數：<span id="amioCount">0</span><br>
-  Lidocaine 次數：<span id="lidoCount">0</span>
+  Lidocaine 次數：<span id="lidoCount">0</span><br>
+  電擊次數（Shock）：<span id="shockCount">0</span>
 </div>
 
 <div class="row">
-  <button class="red" onclick="startCPR()">Start CPR</button>
+  <button class="red" onclick="startCPR()">CPR</button>
+  <button class="red" onclick="stopCPR()">Stop CPR</button>
   <button class="red" onclick="aedAnalyze()">AED Analyze</button>
   <button class="red" onclick="switchCPR()">Switch CPR</button>
+  <button class="shoke" onclick="recordShock()">Shock!</button>
 </div>
 
 <div class="row">
@@ -108,6 +112,7 @@
   let epiCount = 0;
   let amioCount = 0;
   let lidoCount = 0;
+  let shockCount = 0;
 
   function updateClock() {
     const now = new Date();
@@ -140,6 +145,12 @@
     const absolute = formatAbsoluteTime(now);
     const log = document.getElementById("log");
     log.innerText += `[${elapsed}] (${absolute}) ${event}\n`;
+  }
+
+  function recordShock() {
+    shockCount++;
+    document.getElementById("shockCount").innerText = shockCount;
+    recordEvent("Shock!");
   }
 
   function recordEndoTube() {
@@ -220,6 +231,14 @@
     setTimeout(() => startMetronome(100), 2000);
   }
 
+  function stopCPR() {
+    recordEvent("CPR 停止");
+    stopMetronome();
+    if (h5tReminderTimer) clearInterval(h5tReminderTimer);
+    if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
+    if (epiReminderTimer) clearTimeout(epiReminderTimer);
+  }
+
   function triggerH5TReminder() {
     if (h5tReminderTimer) {
       clearInterval(h5tReminderTimer);
@@ -234,6 +253,7 @@
     if (audio) {
       audio.currentTime = 0;
       audio.play();
+      setTimeout(() => audio.pause(), 200);
     }
   }
 
@@ -261,9 +281,11 @@
       document.getElementById("epiCount").innerText = "0";
       document.getElementById("amioCount").innerText = "0";
       document.getElementById("lidoCount").innerText = "0";
+      document.getElementById("shockCount").innerText = "0";
       epiCount = 0;
       amioCount = 0;
       lidoCount = 0;
+      shockCount = 0;
       startTime = null;
       document.getElementById("amioBtn").disabled = false;
       document.getElementById("amioBtn").style.opacity = 1;
