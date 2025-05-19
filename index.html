@@ -166,9 +166,38 @@ function recordEvent(event) {
   const now = new Date();
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
-  const timeStamp = `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}]`;
+  const timeStamp = `[${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}]`;
   const nowTime = `[${now.toLocaleTimeString('zh-TW', { hour12: false })}]`;
-  document.getElementById("log").innerText += `${timeStamp} ${nowTime} ${event}\n`;
+
+  const logContainer = document.getElementById("log");
+
+  const logEntry = document.createElement("div");
+  logEntry.style.display = "flex";
+  logEntry.style.alignItems = "center";
+  logEntry.style.justifyContent = "space-between";
+  logEntry.style.marginBottom = "4px";
+
+  const logText = document.createElement("span");
+  logText.textContent = `${timeStamp} ${nowTime} ${event}`;
+  logText.style.flex = "1";
+
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "刪除";
+  delBtn.style.marginLeft = "10px";
+  delBtn.style.backgroundColor = "#f44336";
+  delBtn.style.color = "white";
+  delBtn.style.border = "none";
+  delBtn.style.borderRadius = "4px";
+  delBtn.style.cursor = "pointer";
+  delBtn.onclick = function () {
+    if (confirm("是否刪除？")) {
+      logContainer.removeChild(logEntry);
+    }
+  };
+
+  logEntry.appendChild(logText);
+  logEntry.appendChild(delBtn);
+  logContainer.appendChild(logEntry);
 }
 
 function startCPR() {
