@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACLS 記錄工具</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    #log { margin-top: 20px; white-space: pre-line; border-top: 1px solid #ccc; padding-top: 10px; }
+    #clock, #epiCount { font-size: 20px; margin-bottom: 10px; color: #333; }
+  </style>
+</head>
+<body>
+
+<h2>ACLS 記錄工具</h2>
+<div id="clock"></div>
+<div id="epiCount">Epinephrine 次數：0</div>
+
+<button onclick="recordEvent('CPR 開始')">Start CPR</button>
+<button onclick="aedAnalyze()">AED Analyze</button>
+<button onclick="giveEpinephrine()">Epinephrine</button>
+<button onclick="recordEvent('Amiodarone 給藥')">Amiodarone</button>
+<button onclick="recordEvent('On IV')">On IV</button>
+<button onclick="recordEvent('Endotracheal Intubation')">Endo</button>
+<button onclick="switchCPR()">Switch CPR</button>
+<button onclick="recordEvent('ROSC')">ROSC</button>
+<button onclick="resetLog()">Reset</button>
+
+<div id="log"></div>
+
+<script>
+  let startTime = null;
+  let cprSwitchTimer = null;
+  let epiReminderTimer = null;
+  let epiCount = 0;
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").innerText = "當前時間：" + now.toLocaleString();
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function getCurrentTime() {
+    return new Date();
+  }
+
+  function formatTimeDiff(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    let seconds = String(totalSeconds % 60).padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
+
+  function formatAbsoluteTime(date) {
+    return date.toLocaleString();
+  }
+
+  function recordEvent(event) {
+    const now = getCurrentTime();
+    if (!startTime) {
+      startTime = now;
+    }
+    const elapsed = formatTimeDiff(now - startTime);
+    const absolute = formatAbsoluteTime(now);
+    const log = document.getElementById("log");
+    log.innerText += `[${elapsed}] (${absolute}) ${event}
+`;
+  }
+
+  function giveEpinephrine() {
+    epiCount++;
+    document.getElementById("epiCount").innerText = `Epinephrine 次數：${epiCount}`;
+    recordEvent("Epinephrine 給藥");
+    scheduleEpinephrineReminder();
+  }
+
+  function scheduleEpinephrineReminder() {
+    if (epiReminderTimer) {
+      clearTimeout(epiReminderTimer);
+    }
+    epiReminderTimer = setTimeout(() => {
+      alert("提醒：已過 4 分鐘，請考慮再次給予 Epinephrine！");
+    }, 4 * 60 * 1000);
+  }
+
+  function aedAnalyze() {
+    recordEvent("AED 分析開始（倒數 10 秒）");
+    setTimeout(() => {
+      recordEvent("AED 分析結束");
+    }, 10000);
+  }
+
+  function switchCPR() {
+    recordEvent("CPR 換人");
+    if (cprSwitchTimer) {
+      clearTimeout(cprSwitchTimer);
+    }
+    cprSwitchTimer = setTimeout(() => {
+      alert("提醒：2 分鐘已到，建議 CPR 換人！");
+    }, 2 * 60 * 1000);
+  }
+
+  function resetLog() {
+    if (confirm("確定要清除所有紀錄？")) {
+      document.getElementById("log").innerText = "";
+      document.getElementById("epiCount").innerText = "Epinephrine 次數：0";
+      epiCount = 0;
+      startTime = null;
+      if (cprSwitchTimer) {
+        clearTimeout(cprSwitchTimer);
+      }
+      if (epiReminderTimer) {
+        clearTimeout(epiReminderTimer);
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
