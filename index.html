@@ -124,8 +124,6 @@
     <button class="green" onclick="recordEvent('IV')">IV</button>
     <button class="green" onclick="recordEvent('IO')">IO</button>
     <button class="green" onclick="recordEndoTube()">Endo</button>
-    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-    <button class="gray" onclick="resetLog()">Reset</button>
   </div>
   <div class="column">
     <button class="brown" onclick="toggleMarker(this)">Hypoxia</button>
@@ -138,6 +136,16 @@
     <button class="orange" onclick="toggleMarker(this)">Toxins</button>
     <button class="orange" onclick="toggleMarker(this)">Thrombosis/Coronary</button>
     <button class="orange" onclick="toggleMarker(this)">Thrombosis/Pulmonary</button>
+  </div>
+</div>
+
+<!-- ROSC 與 Reset 按鈕 -->
+<div class="center-row">
+  <div style="width: 45%; display: flex; justify-content: center;">
+    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+  </div>
+  <div style="width: 45%; display: flex; justify-content: center;">
+    <button class="gray" onclick="resetLog()">Reset</button>
   </div>
 </div>
 
