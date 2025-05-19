@@ -159,7 +159,7 @@ let timers = [];
 function updateClock() {
   const now = new Date();
   document.getElementById("clock").innerText =
-    "當前時間：" + now.toLocaleString('zh-TW', { hour12: false });
+    "Current Time：" + now.toLocaleString('zh-TW', { hour12: false });
 }
 setInterval(updateClock, 1000); updateClock();
 
