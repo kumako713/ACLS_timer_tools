@@ -5,38 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ACLS Timer Tool</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      width: 100%;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 0; padding: 20px;
+      display: flex; flex-direction: column; align-items: center;
     }
     .center-row {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 15px;
-      flex-wrap: wrap;
       gap: 10px;
       width: 100%;
     }
     .split-row {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
+      justify-content: center;
+      gap: 40px;
       width: 100%;
     }
     .column {
-      flex: 0 0 45%;
-      min-width: 220px;
+      width: 45%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -51,10 +41,7 @@
       width: 100%;
       max-width: 160px;
     }
-    .selected {
-      background-color: black !important;
-      color: white !important;
-    }
+    .selected { background-color: black !important; color: white !important; }
     .red { background-color: #e53935; color: white; }
     .darkred { background-color: #8B0000; color: white; }
     .yellow { background-color: #fbc02d; color: black; }
@@ -65,10 +52,7 @@
     .brown { background-color: #d2b48c; color: black; }
     .orange { background-color: orange; color: black; }
     .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
-    .input-label {
-      font-size: 16px;
-      margin-left: 10px;
-    }
+    .input-label { font-size: 16px; margin-left: 10px; }
     #log {
       margin-top: 20px;
       white-space: pre-line;
@@ -94,25 +78,27 @@
 </head>
 <body>
 
-<div class="center-row">
-  <div class="header-text">ACLS Timer Tool</div>
-</div>
-<div class="center-row">
-  <div id="clock"></div>
-</div>
+<!-- 標題與時間 -->
+<div class="center-row"><div class="header-text">ACLS Timer Tool</div></div>
+<div class="center-row"><div id="clock"></div></div>
+
+<!-- 性別與年齡 -->
 <div class="center-row">
   <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
   <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
-  <input type="number" id="ageInput" style="width:60px; font-size:14px; padding:4px;" />
+  <input type="number" id="ageInput" style="width:60px;" />
   <span class="input-label">Y</span>
 </div>
+
+<!-- 給藥次數 -->
 <div class="center-row" id="countInfo">
-  Epinephrine (Epi): <span id="epiCount">0</span> |
-  Amiodarone (Amio): <span id="amioCount">0</span> |
-  Lidocaine (Lido): <span id="lidoCount">0</span> |
+  Epinephrine: <span id="epiCount">0</span> |
+  Amiodarone: <span id="amioCount">0</span> |
+  Lidocaine: <span id="lidoCount">0</span> |
   Shock: <span id="shockCount">0</span>
 </div>
 
+<!-- 操作按鈕與5H5T -->
 <div class="split-row">
   <div class="column">
     <button class="red" onclick="startCPR()">CPR</button>
@@ -143,6 +129,7 @@
   </div>
 </div>
 
+<!-- 紀錄區 -->
 <div id="log"></div>
 
 <script>
@@ -195,8 +182,9 @@ function giveAmiodarone() {
   } else if (amioCount === 2) {
     alert("150mg IVP");
     recordEvent("Amiodarone 150mg 給藥");
-    document.getElementById("amioBtn").disabled = true;
-    document.getElementById("amioBtn").style.opacity = 0.5;
+    const btn = document.getElementById("amioBtn");
+    btn.disabled = true;
+    btn.style.opacity = 0.5;
   }
   document.getElementById("amioCount").innerText = amioCount;
 }
@@ -207,8 +195,9 @@ function giveLidocaine() {
   } else if (lidoCount === 2) {
     alert("0.5-0.75mg/kg IVP");
     recordEvent("Lidocaine 維持劑量");
-    document.getElementById("lidoBtn").disabled = true;
-    document.getElementById("lidoBtn").style.opacity = 0.5;
+    const btn = document.getElementById("lidoBtn");
+    btn.disabled = true;
+    btn.style.opacity = 0.5;
   }
   document.getElementById("lidoCount").innerText = lidoCount;
 }
