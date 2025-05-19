@@ -97,14 +97,18 @@
     <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
     <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
     <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
-    <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
+    <div><strong>⚡️Shock⚡️:</strong> <span id="shockCount">0</span></div>
 
-    <div style="margin-top: 10px;"><strong>SpO₂:</strong>
-      <input type="text" style="width: 80px; margin-left: 10px;" />
+    <!-- SpO2 格式：SpO2 [__] → [__] -->
+    <div style="display: flex; align-items: center; margin-top: 12px;">
+      <label style="margin-right: 6px;">SpO₂</label>
+      <input type="text" style="width: 60px; margin-right: 6px;" />
+      <span style="margin: 0 6px;">→</span>
+      <input type="text" style="width: 60px;" />
     </div>
-    <div><strong>BT:</strong>
-      <input type="text" style="width: 80px; margin-left: 28px;" />
-    </div>
+
+    
+<div style="height: 20px;"></div>
   </div>
 
   <!-- 右邊欄位 -->
@@ -116,6 +120,7 @@
     <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
   </div>
 </div>
+<div style="height: 20px;"></div>
 
 <!-- 操作按鈕與5H5T -->
 <div class="split-row">
