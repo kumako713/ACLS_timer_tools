@@ -90,13 +90,13 @@
   <span class="input-label">Y</span>
 </div>
 
-<!-- 病史與過敏史輸入 -->
-<div class="center-row" style="flex-direction: column; align-items: flex-start; width: 100%; max-width: 600px;">
-  <label for="history" style="font-weight: bold; margin-bottom: 5px;">病史、過敏史</label>
-  <textarea id="history" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-</div>
+<!-- 其他處置欄位 -->
+ <div class="column" style="align-items: flex-start;">
+    <label for="otherNotes" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Other treatments</label>
+    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+</div> 
 
-<!-- 藥物與 Shock 計數 + 其他處置欄位 -->
+<!-- 藥物與 Shock 計數 + 病史與過敏史輸入 -->
 <div class="split-row">
   <div class="column" style="align-items: flex-start;">
     <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
@@ -104,9 +104,9 @@
     <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
     <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
   </div>
-  <div class="column" style="align-items: flex-start;">
-    <label for="otherNotes" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">其他處置</label>
-    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+  <div class="center-row" style="flex-direction: column; align-items: flex-start; width: 100%; max-width: 600px;">
+    <label for="history" style="font-weight: bold; margin-bottom: 5px;">Medical history/ Allergy</label>
+    <textarea id="history" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
   </div>
 </div>
 
