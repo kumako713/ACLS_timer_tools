@@ -8,7 +8,9 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
     }
     .header-text {
       font-size: 32px;
@@ -16,40 +18,45 @@
       color: white;
       padding: 10px 20px;
       border-radius: 8px;
-      display: inline-block;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .button-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
     }
     button {
       padding: 8px 16px;
       font-size: 14px;
       border: none;
       border-radius: 6px;
-      color: white;
       cursor: pointer;
+      width: 200px;
     }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-    .red { background-color: #e53935; }
+    .red { background-color: #e53935; color: white; }
+    .darkred { background-color: #8B0000; color: white; }
     .yellow { background-color: #fbc02d; color: black; }
     .green { background-color: #40e0d0; color: black; }
     .blue { background-color: #4fc3f7; color: black; }
     .gray { background-color: #b0bec5; color: black; }
-    .black { background-color: #000000; color: white; }
     .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
-    .darkred { background-color: #8B0000; color: white; }
+    .brown { background-color: #d2b48c; color: black; }
+    .orange { background-color: orange; color: black; }
+    .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
     #log {
       margin-top: 20px;
       white-space: pre-line;
       border-top: 1px solid #ccc;
       padding-top: 10px;
-      text-align: left;
       max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+      text-align: left;
     }
     #clock, #countInfo {
       font-size: 18px;
@@ -60,56 +67,57 @@
 </head>
 <body>
 
-<div class="header-text">ACLS Timer Tool</div>
-
-<div id="clock"></div>
-<div id="countInfo">
-  Epinephrine 次數：<span id="epiCount">0</span><br>
-  Amiodarone 次數：<span id="amioCount">0</span><br>
-  Lidocaine 次數：<span id="lidoCount">0</span><br>
-  電擊次數（Shock）：<span id="shockCount">0</span>
+<div class="column">
+  <div class="header-text">ACLS Timer Tool</div>
+  <div id="clock"></div>
+  <div id="countInfo">
+    Epinephrine 次數：<span id="epiCount">0</span><br>
+    Amiodarone 次數：<span id="amioCount">0</span><br>
+    Lidocaine 次數：<span id="lidoCount">0</span><br>
+    電擊次數（Shock）：<span id="shockCount">0</span>
+  </div>
+  <div class="button-list">
+    <button class="red" onclick="startCPR()">CPR</button>
+    <button class="red" onclick="aedAnalyze()">AED Analyze</button>
+    <button class="red" onclick="switchCPR()">Switch CPR</button>
+    <button class="shoke" onclick="recordShock()">Shock!</button>
+    <button class="darkred" onclick="stopCPR()">Stop CPR</button>
+    <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
+    <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amiodarone</button>
+    <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lidocaine</button>
+    <button class="green" onclick="recordEvent('IV')">IV</button>
+    <button class="green" onclick="recordEvent('IO')">IO</button>
+    <button class="green" onclick="recordEndoTube()">Endo tube</button>
+    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+    <button class="gray" onclick="resetLog()">Reset</button>
+  </div>
+  <div id="log"></div>
 </div>
 
-<div class="row">
-  <button class="red" onclick="startCPR()">CPR</button>
-  <button class="red" onclick="aedAnalyze()">AED Analyze</button>
-  <button class="red" onclick="switchCPR()">Switch CPR</button>
-  <button class="shoke" onclick="recordShock()">Shock!</button>
-  <button class="darkred" onclick="stopCPR()">Stop CPR</button>
-</div>
+<div class="column">
+  <div class="button-list">
+    <button class="brown" onclick="toggleMarker(this)">缺氧 (Hypoxia)</button>
+    <button class="brown" onclick="toggleMarker(this)">高低血鉀 (Hyperkalemia/Hypokalemia)</button>
+    <button class="brown" onclick="toggleMarker(this)">酸鹼問題 (Hydrogen)</button>
+    <button class="brown" onclick="toggleMarker(this)">低血容量 (Hypovolemia)</button>
+    <button class="brown" onclick="toggleMarker(this)">低體溫 (Hypothermia)</button>
 
-<div class="row">
-  <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
-  <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amiodarone</button>
-  <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lidocaine</button>
+    <button class="orange" onclick="toggleMarker(this)">張力性氣胸 (Tension pneumothorax)</button>
+    <button class="orange" onclick="toggleMarker(this)">心包膜填塞 (Tamponade, cardiac)</button>
+    <button class="orange" onclick="toggleMarker(this)">中毒 (Toxins)</button>
+    <button class="orange" onclick="toggleMarker(this)">冠狀動脈血栓 (Thrombosis/Coronary)</button>
+    <button class="orange" onclick="toggleMarker(this)">肺動脈栓塞 (Thrombosis/Pulmonary)</button>
+  </div>
 </div>
-
-<div class="row">
-  <button class="green" onclick="recordEvent('IV')">IV</button>
-  <button class="green" onclick="recordEvent('IO')">IO</button>
-  <button class="green" onclick="recordEndoTube()">Endo tube</button>
-</div>
-
-<div class="row">
-  <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-</div>
-
-<div class="row">
-  <button class="gray" onclick="resetLog()">Reset</button>
-</div>
-
-<div id="log"></div>
 
 <script>
   let startTime = null;
-  let cprSwitchTimer = null;
+  let cprTimers = [];
   let epiReminderTimer = null;
   let h5tReminderTimer = null;
+  let cprSwitchTimer = null;
 
-  let epiCount = 0;
-  let amioCount = 0;
-  let lidoCount = 0;
-  let shockCount = 0;
+  let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 
   function updateClock() {
     const now = new Date();
@@ -118,49 +126,55 @@
   setInterval(updateClock, 1000);
   updateClock();
 
-  function getCurrentTime() {
-    return new Date();
-  }
-
+  function getCurrentTime() { return new Date(); }
   function formatTimeDiff(ms) {
-    let totalSeconds = Math.floor(ms / 1000);
-    let minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-    let seconds = String(totalSeconds % 60).padStart(2, '0');
-    return `${minutes}:${seconds}`;
+    let s = Math.floor(ms / 1000), m = String(Math.floor(s / 60)).padStart(2,'0'), sec = String(s % 60).padStart(2,'0');
+    return `${m}:${sec}`;
   }
-
-  function formatAbsoluteTime(date) {
-    return date.toLocaleString();
-  }
+  function formatAbsoluteTime(date) { return date.toLocaleString(); }
 
   function recordEvent(event) {
     const now = getCurrentTime();
     if (!startTime) startTime = now;
     const elapsed = formatTimeDiff(now - startTime);
     const absolute = formatAbsoluteTime(now);
-    const log = document.getElementById("log");
-    log.innerText += `[${elapsed}] (${absolute}) ${event}\n`;
+    document.getElementById("log").innerText += `[${elapsed}] (${absolute}) ${event}\n`;
   }
 
-  function recordShock() {
-    shockCount++;
-    document.getElementById("shockCount").innerText = shockCount;
-    recordEvent("Shock!");
+  function startCPR() {
+    recordEvent("CPR 開始");
+    if (!startTime) startTime = new Date();
+    triggerH5TReminder();
+    cprTimers.push(setTimeout(() => alert("30秒心律分析"), 90000));
+    cprTimers.push(setTimeout(() => alert("10秒心律分析"), 110000));
   }
 
-  function recordEndoTube() {
-    const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
-    if (cm && ["19", "20", "21", "22", "23"].includes(cm)) {
-      recordEvent(`Fix ${cm}cm`);
-    }
+  function stopCPR() {
+    recordEvent("CPR 停止");
+    cprTimers.forEach(clearTimeout);
+    cprTimers = [];
+    clearTimeout(epiReminderTimer);
+    clearTimeout(cprSwitchTimer);
+    clearInterval(h5tReminderTimer);
+  }
+
+  function switchCPR() {
+    recordEvent("CPR 換人");
+    if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
+    cprSwitchTimer = setTimeout(() => alert("提醒：2 分鐘已到，建議 CPR 換人！"), 120000);
+  }
+
+  function aedAnalyze() {
+    recordEvent("AED 分析開始（倒數 10 秒）");
+    setTimeout(() => recordEvent("AED 分析結束"), 10000);
   }
 
   function giveEpinephrine() {
-    alert("1mg IVP");
-    epiCount++;
+    alert("1mg IVP"); epiCount++;
     document.getElementById("epiCount").innerText = epiCount;
     recordEvent("Epinephrine 給藥");
-    scheduleEpinephrineReminder();
+    if (epiReminderTimer) clearTimeout(epiReminderTimer);
+    epiReminderTimer = setTimeout(() => alert("提醒：已過 4 分鐘，請考慮再次給予 Epinephrine！"), 240000);
   }
 
   function giveAmiodarone() {
@@ -171,8 +185,9 @@
     } else if (amioCount === 2) {
       alert("150mg IVP");
       recordEvent("Amiodarone 150mg 給藥");
-      document.getElementById("amioBtn").disabled = true;
-      document.getElementById("amioBtn").style.opacity = 0.5;
+      const btn = document.getElementById("amioBtn");
+      btn.disabled = true;
+      btn.style.opacity = 0.5;
     }
     document.getElementById("amioCount").innerText = amioCount;
   }
@@ -185,45 +200,24 @@
     } else if (lidoCount === 2) {
       alert("0.5-0.75mg/kg IVP");
       recordEvent("Lidocaine 0.5-0.75mg/kg 給藥");
-      document.getElementById("lidoBtn").disabled = true;
-      document.getElementById("lidoBtn").style.opacity = 0.5;
+      const btn = document.getElementById("lidoBtn");
+      btn.disabled = true;
+      btn.style.opacity = 0.5;
     }
     document.getElementById("lidoCount").innerText = lidoCount;
   }
 
-  function scheduleEpinephrineReminder() {
-    if (epiReminderTimer) clearTimeout(epiReminderTimer);
-    epiReminderTimer = setTimeout(() => {
-      alert("提醒：已過 4 分鐘，請考慮再次給予 Epinephrine！");
-    }, 4 * 60 * 1000);
+  function recordShock() {
+    shockCount++;
+    document.getElementById("shockCount").innerText = shockCount;
+    recordEvent("Shock!");
   }
 
-  function aedAnalyze() {
-    recordEvent("AED 分析開始（倒數 10 秒）");
-    setTimeout(() => {
-      recordEvent("AED 分析結束");
-    }, 10000);
-  }
-
-  function switchCPR() {
-    recordEvent("CPR 換人");
-    if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
-    cprSwitchTimer = setTimeout(() => {
-      alert("提醒：2 分鐘已到，建議 CPR 換人！");
-    }, 2 * 60 * 1000);
-  }
-
-  function startCPR() {
-    recordEvent("CPR 開始");
-    if (!startTime) startTime = new Date();
-    triggerH5TReminder();
-  }
-
-  function stopCPR() {
-    recordEvent("CPR 停止");
-    if (h5tReminderTimer) clearInterval(h5tReminderTimer);
-    if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
-    if (epiReminderTimer) clearTimeout(epiReminderTimer);
+  function recordEndoTube() {
+    const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
+    if (cm && ["19","20","21","22","23"].includes(cm)) {
+      recordEvent(`Fix ${cm}cm`);
+    }
   }
 
   function triggerH5TReminder() {
@@ -236,23 +230,25 @@
   function resetLog() {
     if (confirm("確定要清除所有紀錄？")) {
       document.getElementById("log").innerText = "";
+      epiCount = amioCount = lidoCount = shockCount = 0;
+      startTime = null;
       document.getElementById("epiCount").innerText = "0";
       document.getElementById("amioCount").innerText = "0";
       document.getElementById("lidoCount").innerText = "0";
       document.getElementById("shockCount").innerText = "0";
-      epiCount = 0;
-      amioCount = 0;
-      lidoCount = 0;
-      shockCount = 0;
-      startTime = null;
       document.getElementById("amioBtn").disabled = false;
       document.getElementById("amioBtn").style.opacity = 1;
       document.getElementById("lidoBtn").disabled = false;
       document.getElementById("lidoBtn").style.opacity = 1;
-      clearTimeout(cprSwitchTimer);
-      clearTimeout(epiReminderTimer);
-      clearInterval(h5tReminderTimer);
+      document.querySelectorAll(".toggled").forEach(btn => {
+        btn.classList.remove("toggled");
+      });
+      stopCPR();
     }
+  }
+
+  function toggleMarker(btn) {
+    btn.classList.toggle("toggled");
   }
 </script>
 
