@@ -51,6 +51,8 @@
     .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
     .brown { background-color: #d2b48c; color: black; }
     .orange { background-color: orange; color: black; }
+    .dark { background-color: black; color: white; }
+    .light { background-color: white; color: black; border: 1px solid #333; }
     .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
     .input-label { font-size: 16px; margin-left: 10px; }
     #log {
@@ -77,7 +79,8 @@
   </style>
 </head>
 <body>
-
+<audio id="beepSound" src="beep-07a.mp3"></audio>
+  
 <!-- 標題與時間 -->
 <div class="center-row"><div class="header-text">ACLS Timer Tool</div></div>
 <div class="center-row"><div id="clock"></div></div>
@@ -158,8 +161,13 @@
   </div>
 </div>
 
-<!-- 空一列區隔 + ROSC/Reset -->
+<!-- 空一列區隔 + Mute 按鈕 + ROSC/Reset -->
 <div class="center-row" style="height: 20px;"></div>
+
+<div class="center-row">
+  <button id="muteBtn" class="dark" onclick="toggleMute()">Mute</button>
+</div>
+
 <div class="center-row">
   <div style="width: 45%; display: flex; justify-content: center;">
     <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
@@ -223,17 +231,36 @@ function recordEvent(event) {
   logContainer.appendChild(logEntry);
 }
 
+let beatInterval = null;
+
+function playBeep() {
+  const beep = document.getElementById("beepSound");
+  beep.currentTime = 0;
+  beep.play();
+}
+
 function startCPR() {
   recordEvent("CPR 開始");
   if (!startTime) startTime = new Date();
+
   timers.push(setTimeout(() => alert("30秒心律分析"), 90000));
   timers.push(setTimeout(() => alert("10秒心律分析"), 110000));
   timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
+
+  if (!beatInterval) {
+    playBeep(); // 立即嗶第一下
+    beatInterval = setInterval(playBeep, 600); // 每 600 毫秒嗶一次（100bpm）
+  }
 }
+
 function stopCPR() {
   recordEvent("CPR 停止");
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
   timers = [];
+  if (beatInterval) {
+    clearInterval(beatInterval);
+    beatInterval = null;
+  }
 }
 function aedAnalyze() {
   recordEvent("AED 分析開始（倒數 10 秒）");
@@ -314,6 +341,22 @@ function toggleGender(selected) {
 function toggleMarker(btn) {
   btn.classList.toggle('toggled');
 }
+  let isMuted = false;
+
+function toggleMute() {
+  const btn = document.getElementById("muteBtn");
+  isMuted = !isMuted;
+  btn.innerText = isMuted ? "Unmute" : "Mute";
+  btn.className = isMuted ? "light" : "dark";
+}
+
+function playBeep() {
+  if (isMuted) return;
+  const beep = document.getElementById("beepSound");
+  beep.currentTime = 0;
+  beep.play();
+}
+  
 </script>
 
 </body>
