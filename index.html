@@ -30,26 +30,26 @@
     .split-row {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 40px;
+      justify-content: space-between;
+      gap: 10px;
       width: 100%;
     }
     .column {
-      flex: 1;
-      min-width: 250px;
+      flex: 0 0 45%;
+      min-width: 220px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     button {
-      padding: 8px 16px;
-      font-size: 14px;
+      padding: 6px 10px;
+      font-size: 13px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       width: 100%;
-      max-width: 180px;
+      max-width: 160px;
     }
     .selected {
       background-color: black !important;
@@ -94,31 +94,25 @@
 </head>
 <body>
 
-<!-- 標題與時間 -->
 <div class="center-row">
   <div class="header-text">ACLS Timer Tool</div>
 </div>
 <div class="center-row">
   <div id="clock"></div>
 </div>
-
-<!-- 性別與年齡 -->
 <div class="center-row">
   <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
   <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
   <input type="number" id="ageInput" style="width:60px; font-size:14px; padding:4px;" />
   <span class="input-label">Y</span>
 </div>
-
-<!-- 次數紀錄 -->
 <div class="center-row" id="countInfo">
-  Epinephrine: <span id="epiCount">0</span> |
-  Amiodarone: <span id="amioCount">0</span> |
-  Lidocaine: <span id="lidoCount">0</span> |
+  Epinephrine (Epi): <span id="epiCount">0</span> |
+  Amiodarone (Amio): <span id="amioCount">0</span> |
+  Lidocaine (Lido): <span id="lidoCount">0</span> |
   Shock: <span id="shockCount">0</span>
 </div>
 
-<!-- 按鈕區域 -->
 <div class="split-row">
   <div class="column">
     <button class="red" onclick="startCPR()">CPR</button>
@@ -149,7 +143,6 @@
   </div>
 </div>
 
-<!-- 紀錄區 -->
 <div id="log"></div>
 
 <script>
@@ -177,29 +170,24 @@ function startCPR() {
   timers.push(setTimeout(() => alert("10秒心律分析"), 110000));
   timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
 }
-
 function stopCPR() {
   recordEvent("CPR 停止");
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
   timers = [];
 }
-
 function aedAnalyze() {
   recordEvent("AED 分析開始（倒數 10 秒）");
   setTimeout(() => recordEvent("AED 分析結束"), 10000);
 }
-
 function switchCPR() {
   recordEvent("CPR 換人");
   setTimeout(() => alert("2分鐘已到，請考慮 CPR 換人"), 120000);
 }
-
 function giveEpinephrine() {
   alert("1mg IVP");
   recordEvent("Epinephrine 給藥");
   document.getElementById("epiCount").innerText = ++epiCount;
 }
-
 function giveAmiodarone() {
   if (++amioCount === 1) {
     alert("300mg IVP (考慮Lidocaine?)");
@@ -212,7 +200,6 @@ function giveAmiodarone() {
   }
   document.getElementById("amioCount").innerText = amioCount;
 }
-
 function giveLidocaine() {
   if (++lidoCount === 1) {
     alert("1-1.5mg/kg IVP");
@@ -225,19 +212,16 @@ function giveLidocaine() {
   }
   document.getElementById("lidoCount").innerText = lidoCount;
 }
-
 function recordShock() {
   recordEvent("Shock!");
   document.getElementById("shockCount").innerText = ++shockCount;
 }
-
 function recordEndoTube() {
   const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
   if (cm && ["19","20","21","22","23"].includes(cm)) {
     recordEvent(`Fix ${cm}cm`);
   }
 }
-
 function resetLog() {
   if (confirm("確定要清除所有紀錄？")) {
     document.getElementById("log").innerText = "";
@@ -254,7 +238,6 @@ function resetLog() {
     document.querySelectorAll('.toggled').forEach(btn => btn.classList.remove('toggled'));
   }
 }
-
 function toggleGender(selected) {
   const maleBtn = document.getElementById("maleBtn");
   const femaleBtn = document.getElementById("femaleBtn");
@@ -266,7 +249,6 @@ function toggleGender(selected) {
     maleBtn.classList.remove('selected');
   }
 }
-
 function toggleMarker(btn) {
   btn.classList.toggle('toggled');
 }
