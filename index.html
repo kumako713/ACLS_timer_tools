@@ -8,19 +8,24 @@
     body { font-family: Arial, sans-serif; padding: 20px; }
     button { margin: 5px; padding: 10px 20px; font-size: 16px; }
     #log { margin-top: 20px; white-space: pre-line; border-top: 1px solid #ccc; padding-top: 10px; }
-    #clock, #epiCount { font-size: 20px; margin-bottom: 10px; color: #333; }
+    #clock, #countInfo { font-size: 20px; margin-bottom: 10px; color: #333; }
   </style>
 </head>
 <body>
 
 <h2>ACLS 記錄工具</h2>
 <div id="clock"></div>
-<div id="epiCount">Epinephrine 次數：0</div>
+<div id="countInfo">
+  Epinephrine 次數：<span id="epiCount">0</span><br>
+  Amiodarone 次數：<span id="amioCount">0</span><br>
+  Lidocaine 次數：<span id="lidoCount">0</span>
+</div>
 
-<button onclick="recordEvent('CPR 開始')">Start CPR</button>
+<button onclick="startCPR()">Start CPR</button>
 <button onclick="aedAnalyze()">AED Analyze</button>
 <button onclick="giveEpinephrine()">Epinephrine</button>
-<button onclick="recordEvent('Amiodarone 給藥')">Amiodarone</button>
+<button onclick="giveAmiodarone()">Amiodarone</button>
+<button onclick="giveLidocaine()">Lidocaine</button>
 <button onclick="recordEvent('On IV')">On IV</button>
 <button onclick="recordEvent('Endotracheal Intubation')">Endo</button>
 <button onclick="switchCPR()">Switch CPR</button>
@@ -33,7 +38,11 @@
   let startTime = null;
   let cprSwitchTimer = null;
   let epiReminderTimer = null;
+  let h5tReminderTimer = null;
+
   let epiCount = 0;
+  let amioCount = 0;
+  let lidoCount = 0;
 
   function updateClock() {
     const now = new Date();
@@ -65,15 +74,26 @@
     const elapsed = formatTimeDiff(now - startTime);
     const absolute = formatAbsoluteTime(now);
     const log = document.getElementById("log");
-    log.innerText += `[${elapsed}] (${absolute}) ${event}
-`;
+    log.innerText += `[${elapsed}] (${absolute}) ${event}\n`;
   }
 
   function giveEpinephrine() {
     epiCount++;
-    document.getElementById("epiCount").innerText = `Epinephrine 次數：${epiCount}`;
+    document.getElementById("epiCount").innerText = epiCount;
     recordEvent("Epinephrine 給藥");
     scheduleEpinephrineReminder();
+  }
+
+  function giveAmiodarone() {
+    amioCount++;
+    document.getElementById("amioCount").innerText = amioCount;
+    recordEvent("Amiodarone 給藥");
+  }
+
+  function giveLidocaine() {
+    lidoCount++;
+    document.getElementById("lidoCount").innerText = lidoCount;
+    recordEvent("Lidocaine 給藥");
   }
 
   function scheduleEpinephrineReminder() {
@@ -102,18 +122,36 @@
     }, 2 * 60 * 1000);
   }
 
+  function startCPR() {
+    recordEvent("CPR 開始");
+    if (!startTime) {
+      startTime = new Date();
+    }
+    triggerH5TReminder();
+  }
+
+  function triggerH5TReminder() {
+    if (h5tReminderTimer) {
+      clearInterval(h5tReminderTimer);
+    }
+    h5tReminderTimer = setInterval(() => {
+      alert("提醒：CPR 執行中，請考慮 5H5T？");
+    }, 2 * 60 * 1000);
+  }
+
   function resetLog() {
     if (confirm("確定要清除所有紀錄？")) {
       document.getElementById("log").innerText = "";
-      document.getElementById("epiCount").innerText = "Epinephrine 次數：0";
+      document.getElementById("epiCount").innerText = "0";
+      document.getElementById("amioCount").innerText = "0";
+      document.getElementById("lidoCount").innerText = "0";
       epiCount = 0;
+      amioCount = 0;
+      lidoCount = 0;
       startTime = null;
-      if (cprSwitchTimer) {
-        clearTimeout(cprSwitchTimer);
-      }
-      if (epiReminderTimer) {
-        clearTimeout(epiReminderTimer);
-      }
+      if (cprSwitchTimer) clearTimeout(cprSwitchTimer);
+      if (epiReminderTimer) clearTimeout(epiReminderTimer);
+      if (h5tReminderTimer) clearInterval(h5tReminderTimer);
     }
   }
 </script>
