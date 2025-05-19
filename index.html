@@ -92,29 +92,28 @@
 
 <!-- 給藥與處置紀錄區塊 -->
 <div class="split-row">
+  <!-- 左邊欄位 -->
   <div class="column" style="align-items: flex-start;">
     <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
     <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
     <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
-    <div><strong>Shock️:</strong> <span id="shockCount">0</span></div>
+    <div><strong>⚡️Shock⚡️:</strong> <span id="shockCount">0</span></div>
+
+    <div style="margin-top: 10px;"><strong>SpO₂:</strong>
+      <input type="text" style="width: 80px; margin-left: 10px;" />
+    </div>
+    <div><strong>BT:</strong>
+      <input type="text" style="width: 80px; margin-left: 28px;" />
+    </div>
   </div>
-  <!-- SpO2 & BT 垂直排列輸入欄位 -->
-<div style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 8px; gap: 6px;">
-  <div>
-    <label for="spo2Input" style="margin-right: 6px;">SpO₂</label>
-    <input id="spo2Input" type="text" placeholder="%" style="width: 80px;" />
-  </div>
-  <div>
-    <label for="btInput" style="margin-right: 16px;">BT</label>
-    <input id="btInput" type="text" placeholder="°C" style="width: 80px;" />
-  </div>
-</div>
+
+  <!-- 右邊欄位 -->
   <div class="column" style="align-items: flex-start;">
-    <label for="otherNotes" style="font-weight: bold; margin-bottom: 5px;">History/ Allergy</label>
-    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-    <label for="history" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Other Treatments</label>
+    <label for="history" style="font-weight: bold; margin-bottom: 5px;">Medical History/ Allergy</label>
     <textarea id="history" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-    <div style="height: 20px;"></div>
+
+    <label for="otherNotes" style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Other Treatments</label>
+    <textarea id="otherNotes" rows="3" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
   </div>
 </div>
 
