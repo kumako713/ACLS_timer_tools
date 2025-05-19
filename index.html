@@ -103,6 +103,7 @@
   let h5tReminderTimer = null;
   let metronomeInterval = null;
   let metronomeOn = false;
+  let audioContext = null;
 
   let epiCount = 0;
   let amioCount = 0;
@@ -192,6 +193,9 @@
   }
 
   function startCPR() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
     recordEvent("CPR 開始");
     if (!startTime) {
       startTime = new Date();
@@ -210,13 +214,16 @@
   }
 
   function playBeep() {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = context.createOscillator();
+    if (!audioContext) return;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
     oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(1000, context.currentTime);
-    oscillator.connect(context.destination);
+    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
     oscillator.start();
-    oscillator.stop(context.currentTime + 0.1);
+    oscillator.stop(audioContext.currentTime + 0.1);
   }
 
   function startMetronome(bpm = 100) {
