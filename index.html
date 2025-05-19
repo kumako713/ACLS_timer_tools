@@ -92,25 +92,32 @@
 
 <!-- 給藥與處置紀錄區塊 -->
 <div class="split-row">
-  <!-- 左邊欄位 -->
-  <div class="column" style="align-items: flex-start;">
-    <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
-    <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
-    <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
-    <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
+ <!-- 左邊欄位 -->
+<div class="column" style="align-items: flex-start;">
+  <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
+  <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
+  <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
+  <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
 
-    <!-- SpO2 格式：SpO2 [__] → [__] -->
-    <div style="display: flex; align-items: center; margin-top: 12px;">
-      <label style="margin-right: 6px;">SpO₂</label>
-      <input type="text" style="width: 60px; margin-right: 6px;" />
-      <span style="margin: 0 6px;">→</span>
-      <input type="text" style="width: 60px;" />
-    </div>
-
-    
-<div style="height: 20px;"></div>
+  <!-- SpO2 格式：SpO2 [__] → [__] -->
+  <div style="display: flex; align-items: center; margin-top: 12px;">
+    <label style="margin-right: 6px;">SpO₂</label>
+    <input type="text" style="width: 60px; margin-right: 6px;" />
+    <span style="margin: 0 6px;">→</span>
+    <input type="text" style="width: 60px;" />
   </div>
 
+  <!-- BT 格式：BT [__] → [__] -->
+  <div style="display: flex; align-items: center; margin-top: 8px;">
+    <label style="margin-right: 14px;">BT</label>
+    <input type="text" style="width: 60px; margin-right: 6px;" />
+    <span style="margin: 0 6px;">→</span>
+    <input type="text" style="width: 60px;" />
+  </div>
+
+  <!-- 空白區隔 -->
+  <div style="height: 20px;"></div>
+</div>
   <!-- 右邊欄位 -->
   <div class="column" style="align-items: flex-start;">
     <label for="history" style="font-weight: bold; margin-bottom: 5px;">Medical History/ Allergy</label>
