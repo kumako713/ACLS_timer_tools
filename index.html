@@ -20,8 +20,17 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .button-group {
+    .split-row {
       display: flex;
+      justify-content: center;
+      gap: 80px;
+      width: 100%;
+      max-width: 1000px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 10px;
     }
     button {
@@ -30,6 +39,7 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      width: 180px;
     }
     .selected {
       background-color: black !important;
@@ -42,6 +52,13 @@
     .blue { background-color: #4fc3f7; color: black; }
     .gray { background-color: #b0bec5; color: black; }
     .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
+    .brown { background-color: #d2b48c; color: black; }
+    .orange { background-color: orange; color: black; }
+    .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
+    .input-label {
+      font-size: 16px;
+      margin-left: 10px;
+    }
     #log {
       margin-top: 20px;
       white-space: pre-line;
@@ -54,69 +71,68 @@
       font-size: 18px;
       color: #333;
     }
-    .input-label {
-      font-size: 16px;
-      margin-left: 10px;
-    }
   </style>
 </head>
 <body>
 
-<!-- 第一列：標題 -->
+<!-- 標題 -->
 <div class="center-row">
   <div class="header-text" style="font-size:32px; background-color:#e53935; color:white; padding:10px 20px; border-radius:8px;">ACLS Timer Tool</div>
 </div>
 
-<!-- 第二列：現在時間 -->
+<!-- 時間 -->
 <div class="center-row">
   <div id="clock"></div>
 </div>
 
-<!-- 第三列：性別與年齡 -->
+<!-- 性別與年齡 -->
 <div class="center-row">
   <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
   <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
   <input type="number" id="ageInput" placeholder="" style="width:60px; font-size:14px; padding:4px;" />
-  <span class="input-label">years old</span>
+  <span class="input-label">Y</span>
 </div>
 
-<!-- 第四列：給藥與電擊次數 -->
+<!-- 藥物與電擊紀錄 -->
 <div class="center-row" id="countInfo">
-  Epi: <span id="epiCount">0</span> |
-  Amio: <span id="amioCount">0</span> |
-  Lido: <span id="lidoCount">0</span> |
+  Epinephrine (Epi): <span id="epiCount">0</span> |
+  Amiodarone (Amio): <span id="amioCount">0</span> |
+  Lidocaine (Lido): <span id="lidoCount">0</span> |
   Shock: <span id="shockCount">0</span>
 </div>
 
-<!-- 第五列：操作按鈕 CPR 等 -->
-<div class="center-row">
-  <button class="red" onclick="startCPR()">CPR</button>
-  <button class="red" onclick="aedAnalyze()">AED Analyze</button>
-  <button class="red" onclick="switchCPR()">Switch CPR</button>
-  <button class="shoke" onclick="recordShock()">Shock!</button>
-  <button class="darkred" onclick="stopCPR()">Stop CPR</button>
+<!-- 按鈕區 -->
+<div class="split-row">
+  <div class="column">
+    <button class="red" onclick="startCPR()">CPR</button>
+    <button class="red" onclick="aedAnalyze()">AED Analyze</button>
+    <button class="red" onclick="switchCPR()">Switch CPR</button>
+    <button class="shoke" onclick="recordShock()">⚡️Shock⚡️</button>
+    <button class="darkred" onclick="stopCPR()">Stop CPR</button>
+    <button class="yellow" onclick="giveEpinephrine()">Epi</button>
+    <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amio</button>
+    <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lido</button>
+    <button class="green" onclick="recordEvent('IV')">IV</button>
+    <button class="green" onclick="recordEvent('IO')">IO</button>
+    <button class="green" onclick="recordEndoTube()">Endo</button>
+    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+    <button class="gray" onclick="resetLog()">Reset</button>
+  </div>
+  <div class="column">
+    <button class="brown" onclick="toggleMarker(this)">Hypoxia</button>
+    <button class="brown" onclick="toggleMarker(this)">Hypo/Hyperkalemia</button>
+    <button class="brown" onclick="toggleMarker(this)">Hydrogen</button>
+    <button class="brown" onclick="toggleMarker(this)">Hypovolemia</button>
+    <button class="brown" onclick="toggleMarker(this)">Hypothermia</button>
+    <button class="orange" onclick="toggleMarker(this)">Tension pneumothorax</button>
+    <button class="orange" onclick="toggleMarker(this)">Tamponade</button>
+    <button class="orange" onclick="toggleMarker(this)">Toxins</button>
+    <button class="orange" onclick="toggleMarker(this)">Thrombosis/Coronary</button>
+    <button class="orange" onclick="toggleMarker(this)">Thrombosis/Pulmonary</button>
+  </div>
 </div>
 
-<!-- 同列：藥物按鈕 -->
-<div class="center-row">
-  <button class="yellow" onclick="giveEpinephrine()">Epi</button>
-  <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amio</button>
-  <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lido</button>
-</div>
-
-<!-- 同列：IV IO Endo -->
-<div class="center-row">
-  <button class="green" onclick="recordEvent('IV')">IV</button>
-  <button class="green" onclick="recordEvent('IO')">IO</button>
-  <button class="green" onclick="recordEndoTube()">Endo</button>
-</div>
-
-<!-- ROSC與Reset -->
-<div class="center-row">
-  <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-  <button class="gray" onclick="resetLog()">Reset</button>
-</div>
-
+<!-- 紀錄區 -->
 <div id="log"></div>
 
 <script>
@@ -139,7 +155,7 @@ function recordEvent(event) {
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
   const log = document.getElementById("log");
-  log.innerText += `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] ${event} - ${now.toLocaleTimeString()}\n`;
+  log.innerText += `[${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}] [${now.toLocaleTimeString()}] ${event}\n`;
 }
 
 function startCPR() {
@@ -215,26 +231,22 @@ function resetLog() {
     startTime = null;
     timers.forEach(t => clearTimeout(t) || clearInterval(t));
     timers = [];
+    document.querySelectorAll('.toggled').forEach(btn => btn.classList.remove('toggled'));
   }
 }
 function toggleGender(selected) {
   const maleBtn = document.getElementById("maleBtn");
   const femaleBtn = document.getElementById("femaleBtn");
   if (selected === 'male') {
-    if (maleBtn.classList.contains('selected')) {
-      maleBtn.classList.remove('selected');
-    } else {
-      maleBtn.classList.add('selected');
-      femaleBtn.classList.remove('selected');
-    }
+    maleBtn.classList.toggle('selected');
+    femaleBtn.classList.remove('selected');
   } else {
-    if (femaleBtn.classList.contains('selected')) {
-      femaleBtn.classList.remove('selected');
-    } else {
-      femaleBtn.classList.add('selected');
-      maleBtn.classList.remove('selected');
-    }
+    femaleBtn.classList.toggle('selected');
+    maleBtn.classList.remove('selected');
   }
+}
+function toggleMarker(btn) {
+  btn.classList.toggle('toggled');
 }
 </script>
 
