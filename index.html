@@ -92,27 +92,27 @@
 
 <!-- 給藥與處置紀錄區塊 -->
 <div class="split-row">
- <!-- 左邊欄位 -->
+<!-- 左邊欄位 -->
 <div class="column" style="align-items: flex-start;">
   <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
   <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
   <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
   <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
 
-  <!-- SpO2 格式：SpO2 [__] → [__] -->
-  <div style="display: flex; align-items: center; margin-top: 12px;">
-    <label style="margin-right: 6px;">SpO₂</label>
+  <!-- SpO2 改為粗體並換行顯示輸入框與 % -->
+  <div style="margin-top: 12px;"><strong>SpO₂</strong></div>
+  <div style="display: flex; align-items: center; margin-top: 4px;">
     <input type="text" style="width: 60px; margin-right: 6px;" />
     <span style="margin: 0 6px;">→</span>
-    <input type="text" style="width: 60px;" />
+    <input type="text" style="width: 60px; margin-right: 6px;" />
+    <span>%</span>
   </div>
 
-  <!-- BT 格式：BT [__] → [__] -->
-  <div style="display: flex; align-items: center; margin-top: 8px;">
-    <label style="margin-right: 14px;">BT</label>
+  <!-- BT 改為粗體且與輸入框同行，顯示度C -->
+  <div style="display: flex; align-items: center; margin-top: 12px;">
+    <strong style="margin-right: 8px;">BT</strong>
     <input type="text" style="width: 60px; margin-right: 6px;" />
-    <span style="margin: 0 6px;">→</span>
-    <input type="text" style="width: 60px;" />
+    <span>°C</span>
   </div>
 
   <!-- 空白區隔 -->
