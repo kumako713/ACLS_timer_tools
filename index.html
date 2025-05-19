@@ -139,17 +139,19 @@
   </div>
 </div>
 
+<!-- 空一列區隔 -->
+<div class="center-row" style="height: 20px;"></div>
+
 <!-- ROSC 與 Reset 按鈕 -->
-<div>
-  <div class="center-row">
-    <div style="width: 45%; display: flex; justify-content: center;">
-      <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-    </div>
-    <div style="width: 45%; display: flex; justify-content: center;">
-    <button class="gray" onclick="resetLog()">Reset</button>
-    </div>
+<div class="center-row">
+  <div style="width: 45%; display: flex; justify-content: center;">
+    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
   </div>
-</div>  
+  <div style="width: 45%; display: flex; justify-content: center;">
+    <button class="gray" onclick="resetLog()">Reset</button>
+  </div>
+</div>
+
 
 <!-- 紀錄區 -->
 <div id="log"></div>
