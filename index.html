@@ -23,7 +23,7 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      width: 100%;
+      width: %;
     }
     .column {
       width: 45%;
@@ -213,8 +213,11 @@ function recordEvent(event) {
 
   // ✅ 根據 event 文字內容決定樣式
 if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
-  logText.style.color = "blue";
+  logText.style.backgroundColor = "blue";
+  logText.style.color = "white";
   logText.style.fontWeight = "bold";
+  logText.style.padding = "2px 6px";
+  logText.style.borderRadius = "4px";
 } else if (/Shock/.test(event)) {
   logText.style.backgroundColor = "red";
   logText.style.color = "yellow";
@@ -315,7 +318,7 @@ function giveLidocaine() {
   let dose = null;
 
   if (lidoCount === 0) {
-    dose = prompt("1–1.5mg/kg IVP\n請輸入劑量（mg）：", "100");
+    dose = prompt("1–1.5mg/kg IVP\n請輸入劑量（mg）：");
     if (dose) {
       lidoCount++;
       recordEvent(`Lidocaine ${dose}mg 給藥`);
