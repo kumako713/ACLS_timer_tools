@@ -235,11 +235,6 @@ function recordEvent(event) {
 }
 let beatInterval = null;
 
-function playBeep() {
-  const beep = document.getElementById("beepSound");
-  beep.currentTime = 0;
-  beep.play();
-}
 
 function startCPR() {
   recordEvent("CPR 開始");
