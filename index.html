@@ -277,7 +277,7 @@ function switchCPR() {
 }
 function giveEpinephrine() {
   alert("1mg IVP");
-  recordEvent("Epinephrine 給藥");
+  recordEvent("Epinephrine 1mg 給藥");
   document.getElementById("epiCount").innerText = ++epiCount;
 }
 function giveAmiodarone() {
@@ -300,13 +300,13 @@ function giveLidocaine() {
     dose = prompt("1–1.5mg/kg IVP\n請輸入劑量（mg）：", "100");
     if (dose) {
       lidoCount++;
-      recordEvent(`Lidocaine ${dose}mg`);
+      recordEvent(`Lidocaine ${dose}mg 給藥`);
     }
   } else if (lidoCount === 1) {
     dose = prompt("0.5–0.75mg/kg IVP\n請輸入劑量（mg）：", "50");
     if (dose) {
       lidoCount++;
-      recordEvent(`Lidocaine ${dose}mg`);
+      recordEvent(`Lidocaine ${dose}mg 給藥`);
 
       // 第二次後停用按鈕
       const btn = document.getElementById("lidoBtn");
