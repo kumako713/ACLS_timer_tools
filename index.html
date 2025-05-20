@@ -257,6 +257,10 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   delBtn.onclick = function () {
   if (confirm("是否刪除？")) {
     const text = logText.textContent;
+    logContainer.removeChild(logEntry);  // ✅ 刪除紀錄
+    updateCountsFromLog();              // ✅ 即時更新計數與按鈕狀態
+  }
+};
 
     // 檢查刪除的是哪個藥物紀錄
     if (text.includes("Amiodarone")) {
@@ -309,47 +313,46 @@ function giveEpinephrine() {
   alert("1mg IVP");
   recordEvent("Epinephrine 1mg 給藥");
   document.getElementById("epiCount").innerText = ++epiCount;
+  updateCountsFromLog();
 }
 function giveAmiodarone() {
   if (++amioCount === 1) {
     alert("300mg IVP (考慮Lidocaine?)");
     recordEvent("Amiodarone 300mg 給藥");
+    updateCountsFromLog();  // ✅ 加在這裡
   } else if (amioCount === 2) {
     alert("150mg IVP");
     recordEvent("Amiodarone 150mg 給藥");
+    updateCountsFromLog();  // ✅ 加在這裡
     const btn = document.getElementById("amioBtn");
     btn.disabled = true;
     btn.style.opacity = 0.5;
   }
   document.getElementById("amioCount").innerText = amioCount;
 }
+  
 function giveLidocaine() {
-  let dose = null;
-
-  if (lidoCount === 0) {
-    dose = prompt("1–1.5mg/kg IVP\n請輸入劑量（mg）：");
-    if (dose) {
-      lidoCount++;
-      recordEvent(`Lidocaine ${dose}mg 給藥`);
-    }
-  } else if (lidoCount === 1) {
-    dose = prompt("0.5–0.75mg/kg IVP\n請輸入劑量（mg）：", "50");
-    if (dose) {
-      lidoCount++;
-      recordEvent(`Lidocaine ${dose}mg 給藥`);
-
-      // 第二次後停用按鈕
-      const btn = document.getElementById("lidoBtn");
-      btn.disabled = true;
-      btn.style.opacity = 0.5;
-    }
+  if (++lidoCount === 1) {
+    alert("1-1.5mg/kg IVP");
+    recordEvent("Lidocaine 劑量(?)mg");
+    updateCountsFromLog();  // ✅ 加在這
+  } else if (lidoCount === 2) {
+    alert("0.5-0.75mg/kg IVP");
+    recordEvent("Lidocaine 劑量(?)mg");
+    updateCountsFromLog();  // ✅ 加在這
+    const btn = document.getElementById("lidoBtn");
+    btn.disabled = true;
+    btn.style.opacity = 0.5;
   }
+  document.getElementById("lidoCount").innerText = lidoCount;
+}
 
   document.getElementById("lidoCount").innerText = lidoCount;
 }
 function recordShock() {
   recordEvent("Shock!");
   document.getElementById("shockCount").innerText = ++shockCount;
+  updateCountsFromLog();
 }
 function recordEndoTube() {
   const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：");
@@ -404,6 +407,41 @@ function resetLog() {
     document.getElementById("amioCount").innerText = "0";
     document.getElementById("lidoCount").innerText = "0";
     document.getElementById("shockCount").innerText = "0";
+  }
+}
+
+function updateCountsFromLog() {
+  const logs = document.querySelectorAll("#log div span");
+  let epi = 0, amio = 0, lido = 0, shock = 0;
+
+  logs.forEach(span => {
+    const text = span.textContent;
+    if (text.includes("Epinephrine")) epi++;
+    if (text.includes("Amiodarone")) amio++;
+    if (text.includes("Lidocaine")) lido++;
+    if (text.includes("Shock!")) shock++;
+  });
+
+  epiCount = epi;
+  amioCount = amio;
+  lidoCount = lido;
+  shockCount = shock;
+
+  document.getElementById("epiCount").innerText = epiCount;
+  document.getElementById("amioCount").innerText = amioCount;
+  document.getElementById("lidoCount").innerText = lidoCount;
+  document.getElementById("shockCount").innerText = shockCount;
+
+  const amioBtn = document.getElementById("amioBtn");
+  const lidoBtn = document.getElementById("lidoBtn");
+
+  if (amioBtn) {
+    amioBtn.disabled = amioCount >= 2;
+    amioBtn.style.opacity = amioBtn.disabled ? 0.5 : 1;
+  }
+  if (lidoBtn) {
+    lidoBtn.disabled = lidoCount >= 2;
+    lidoBtn.style.opacity = lidoBtn.disabled ? 0.5 : 1;
   }
 }
 
