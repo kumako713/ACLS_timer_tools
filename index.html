@@ -409,6 +409,9 @@ function toggleMute() {
   isMuted = !isMuted;
   btn.innerText = isMuted ? "Unmute" : "Mute";
   btn.className = isMuted ? "light" : "dark";
+  
+  const beep = document.getElementById("beepSound");
+  if (beep) beep.volume = isMuted ? 0 : 1;
 }
 
 function playBeep() {
