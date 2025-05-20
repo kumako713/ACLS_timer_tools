@@ -23,7 +23,7 @@
       display: flex;
       justify-content: center;
       gap: 40px;
-      width: %;
+      width: 100%;
     }
     .column {
       width: 45%;
@@ -353,53 +353,54 @@ function recordEndoTube() {
 }
 function resetLog() {
   if (confirm("確定要清除所有紀錄？")) {
-    // 清除紀錄內容
-    document.getElementById("log").innerText = "";
-    epiCount = amioCount = lidoCount = shockCount = 0;
-    ["epiCount", "amioCount", "lidoCount", "shockCount"].forEach(id => document.getElementById(id).innerText = "0");
-    
-    // 停止節拍器
-    stopBeat();
-    
-    // 恢復可再按一次藥物按鈕
-    ["amioBtn", "lidoBtn"].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.disabled = false;
-        btn.style.opacity = 1;
-      }
-    });
+    // 清除紀錄區
+    document.getElementById("log").innerHTML = "";
 
-    // 清除所有輸入欄位（text、number、textarea）
+    // 清除輸入欄位
     const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
     inputs.forEach(input => input.value = "");
 
-    // 關閉聲音：如果使用 setInterval 播放節拍器
-    if (typeof beatInterval !== "undefined") {
-      clearInterval(beatInterval);
-    }
-
-    // 重設靜音按鈕狀態
-    isMuted = false;
-    const muteBtn = document.getElementById("muteBtn");
-    if (muteBtn) {
-      muteBtn.innerText = "Mute";
-      muteBtn.className = "dark";
-    }
-
-    // 重置所有 setTimeout / setInterval 計時器
+    // 停止所有計時器
     if (timers && Array.isArray(timers)) {
       timers.forEach(t => clearTimeout(t) || clearInterval(t));
     }
     timers = [];
 
-    // 清除時間
+    // 停止聲音
+    stopBeepLoop();
+
+    // 清除起始時間
     startTime = null;
-    // 還原 5H5T 按鈕樣式
-    const toggleButtons = document.querySelectorAll(".brown, .orange");
-    toggleButtons.forEach(btn => {btn.classList.remove("toggled");});
+
+    // 還原按鈕樣式
+    const toggleButtons = document.querySelectorAll(".toggled, .selected");
+    toggleButtons.forEach(btn => {
+      btn.classList.remove("toggled");
+      btn.classList.remove("selected");
+      btn.disabled = false;
+      btn.style.opacity = 1;
+    });
+
+    // 重設 Mute 按鈕樣式與狀態
+    const muteBtn = document.getElementById("muteBtn");
+    if (muteBtn) {
+      muteBtn.innerText = "Mute";
+      muteBtn.className = "dark";
+    }
+    isMuted = false;
+
+    // 重設藥物與 shock 次數
+    epiCount = 0;
+    amioCount = 0;
+    lidoCount = 0;
+    shockCount = 0;
+    document.getElementById("epiCount").innerText = "0";
+    document.getElementById("amioCount").innerText = "0";
+    document.getElementById("lidoCount").innerText = "0";
+    document.getElementById("shockCount").innerText = "0";
   }
 }
+
 function toggleGender(selected) {
   const maleBtn = document.getElementById("maleBtn");
   const femaleBtn = document.getElementById("femaleBtn");
@@ -479,13 +480,6 @@ function stopCPR() {
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
   timers = [];
   stopBeepLoop(); // 🛑 停止音效播放
-}
-function resetLog() {
-  if (confirm("確定要清除所有紀錄？")) {
-    // ...其餘邏輯
-    stopBeepLoop(); // 🛑 停止音效播放與靜音
-    // ...其餘邏輯
-  }
 }
 
 </script>
