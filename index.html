@@ -224,7 +224,7 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   logText.style.fontWeight = "bold";
   logText.style.padding = "2px 6px";
   logText.style.borderRadius = "4px";
-} else if (/^(I\.V\.|I\.O\.|Endo|Endo Fix \d{2} cm)$/.test(event)) {
+} else if (/^(IV|IO|Endo|Endo Fix \d{2} cm)$/.test(event)) {
   logText.style.backgroundColor = "green";
   logText.style.color = "white";
   logText.style.fontWeight = "bold";
