@@ -492,6 +492,7 @@ function stopCPR() {
 function showISBAR() {
   const chief = document.getElementById("chiefComplaint")?.value || "（未填寫）";
   const history = document.getElementById("history")?.value || "（未填寫）";
+  const otherNotes = document.getElementById("otherNotes")?.value || "（未填寫）";
   const age = document.getElementById("ageInput")?.value || "？";
   let gender = "（未選）";
   if (document.getElementById("maleBtn").classList.contains("selected")) {
@@ -528,19 +529,20 @@ function showISBAR() {
       medStats[name].last = time;
     }
   });
-function getLastMedTime(medStats) {
-  let latest = null;
-  let lastMed = "";
-  for (const [name, stat] of Object.entries(medStats)) {
-    if (stat.last) {
-      const t = new Date("1970-01-01T" + stat.last + "Z");
-      if (!latest || t > latest) {
-        latest = t;
-        lastMed = name;
-      }
+
+  let lastMedLine = "";
+for (let i = logs.length - 1; i >= 0; i--) {
+  const text = logs[i].textContent;
+  if (/給藥/.test(text)) {
+    const match = text.match(/(Epinephrine|Amiodarone|Lidocaine).*?給藥.*?/);
+    if (match) {
+      const med = match[1];
+      const dose = text.split("給藥")[0].split(med)[1].trim();
+      const currentTime = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+      lastMedLine = `${currentTime} ${med}${dose ? " " + dose : ""}`;
+      break;
     }
   }
-  return latest ? `${latest.toTimeString().substring(0, 8)} ${lastMed}` : "無紀錄";
 }
   const aText = `A:
 (心電圖自行判斷)
@@ -550,7 +552,10 @@ Amiodarone：${medStats.Amiodarone?.count || 0} 次
 Lidocaine：${medStats.Lidocaine?.count || 0} 次
 
 最後一次給藥
-${getLastMedTime(medStats)}`;
+${lastMedLine || "尚無紀錄"}`;
+
+其他處置/藥物：${otherNotes}
+`;
 
   const isbar = `
 【ISBAR 彙整】
@@ -561,7 +566,7 @@ S：
 ${gender}患者 ${age} 歲，${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}。
 
 B：
-過去病史有 ${history}。
+病史/過敏史： ${history}。
 
 ${aText}
 
