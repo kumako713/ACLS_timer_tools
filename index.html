@@ -212,20 +212,26 @@ function recordEvent(event) {
   logText.style.flex = "1";
 
   // ✅ 根據 event 文字內容決定樣式
-  if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
-    logText.style.color = "blue";
-    logText.style.fontWeight = "bold";
-  } else if (/Shock/.test(event)) {
-    logText.style.backgroundColor = "red";
-    logText.style.color = "yellow";
-    logText.style.fontWeight = "bold";
-    logText.style.padding = "2px 6px";
-    logText.style.borderRadius = "4px";
-  } else if (/IV|IO|Endo|I\.V\.|I\.O\./.test(event)) {
-    logText.style.color = "olive";
-    logText.style.fontWeight = "bold";
-  }
-
+if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
+  logText.style.color = "blue";
+  logText.style.fontWeight = "bold";
+} else if (/Shock/.test(event)) {
+  logText.style.backgroundColor = "red";
+  logText.style.color = "yellow";
+  logText.style.fontWeight = "bold";
+  logText.style.padding = "2px 6px";
+  logText.style.borderRadius = "4px";
+} else if (/^Endo Fix \d{2} cm$/.test(event)) {
+  logText.style.backgroundColor = "olive";
+  logText.style.color = "white";
+  logText.style.fontWeight = "bold";
+  logText.style.padding = "2px 6px";
+  logText.style.borderRadius = "4px";
+} else if (/IV|IO|Endo|I\.V\.|I\.O\./.test(event)) {
+  logText.style.color = "olive";
+  logText.style.fontWeight = "bold";
+}
+  
   const delBtn = document.createElement("button");
   delBtn.textContent = "刪除";
   delBtn.style.marginLeft = "10px";
@@ -334,9 +340,9 @@ function recordShock() {
   document.getElementById("shockCount").innerText = ++shockCount;
 }
 function recordEndoTube() {
-  const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
-  if (cm && ["19","20","21","22","23"].includes(cm)) {
-    recordEvent(`Fix ${cm}cm`);
+  const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：");
+  if (cm && ["19", "20", "21", "22", "23"].includes(cm)) {
+    recordEvent(`Endo Fix ${cm} cm`);
   }
 }
 function resetLog() {
