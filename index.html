@@ -255,10 +255,29 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   delBtn.style.borderRadius = "4px";
   delBtn.style.cursor = "pointer";
   delBtn.onclick = function () {
-    if (confirm("是否刪除？")) {
-      logContainer.removeChild(logEntry);
+  if (confirm("是否刪除？")) {
+    const text = logText.textContent;
+
+    // 檢查刪除的是哪個藥物紀錄
+    if (text.includes("Amiodarone")) {
+      amioCount = Math.max(0, amioCount - 1);
+      document.getElementById("amioCount").innerText = amioCount;
+      const btn = document.getElementById("amioBtn");
+      btn.disabled = amioCount >= 2;
+      btn.style.opacity = btn.disabled ? 0.5 : 1;
     }
-  };
+
+    if (text.includes("Lidocaine")) {
+      lidoCount = Math.max(0, lidoCount - 1);
+      document.getElementById("lidoCount").innerText = lidoCount;
+      const btn = document.getElementById("lidoBtn");
+      btn.disabled = lidoCount >= 2;
+      btn.style.opacity = btn.disabled ? 0.5 : 1;
+    }
+
+    logContainer.removeChild(logEntry);
+  }
+};
 
   logEntry.appendChild(logText);
   logEntry.appendChild(delBtn);
@@ -516,6 +535,16 @@ for (let i = logs.length - 1; i >= 0; i--) {
     }
   }
 }
+
+  let endoInfo = "尚無紀錄";
+for (let i = logs.length - 1; i >= 0; i--) {
+  const text = logs[i].textContent;
+  const match = text.match(/Fix (\d{2})cm/);
+  if (match) {
+    endoInfo = `Fix ${match[1]}cm`;
+    break;
+  }
+}
  const aText = `A:
  (心電圖自行判斷)
  給予藥物
@@ -525,6 +554,8 @@ for (let i = logs.length - 1; i >= 0; i--) {
 
  Shock 次數：${document.getElementById("shockCount").innerText} 次
 
+ Endo(號數)：${endoInfo}
+ 
  最後一次給藥
  ${lastMedLine || "尚無紀錄"}
 
@@ -547,8 +578,19 @@ ${aText}
 R：
 建議：請自行評估。
   `;
-  navigator.clipboard.writeText(isbar);
-  alert(isbar);
+  // 取得下方 log 所有紀錄內容
+const logText = Array.from(document.querySelectorAll("#log div span"))
+  .map(span => span.textContent)
+  .join("\n");
+
+// 合併 ISBAR 與處置紀錄
+const fullText = `${isbar}\n\n【處置紀錄】\n${logText}`;
+
+// 複製整合後文字
+navigator.clipboard.writeText(fullText);
+
+// 僅彈出 ISBAR 本體
+alert(isbar);
 }
 
 function extractTime(text) {
