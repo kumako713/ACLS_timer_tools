@@ -321,7 +321,10 @@ function resetLog() {
     startTime = null;
     timers.forEach(t => clearTimeout(t) || clearInterval(t));
     timers = [];
-    document.querySelectorAll('.toggled').forEach(btn => btn.classList.remove('toggled'));
+
+    // ✅ 新增這段來清除輸入欄位的內容
+    const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
+    inputs.forEach(input => input.value = "");
   }
 }
 function toggleGender(selected) {
