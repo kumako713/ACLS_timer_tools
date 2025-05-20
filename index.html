@@ -197,8 +197,8 @@ function recordEvent(event) {
   const now = new Date();
   if (!startTime) startTime = now;
   const elapsed = Math.floor((now - startTime) / 1000);
-  const timeStamp = `[${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}]`;
-  const nowTime = `[${now.toLocaleTimeString('zh-TW', { hour12: false })}]`;
+  const timeStamp = `${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}`;
+  const nowTime = now.toLocaleTimeString('zh-TW', { hour12: false });
 
   const logContainer = document.getElementById("log");
 
@@ -209,7 +209,7 @@ function recordEvent(event) {
   logEntry.style.marginBottom = "4px";
 
   const logText = document.createElement("span");
-  logText.textContent = `${timeStamp} ${nowTime} ${event}`;
+  logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
   logText.style.flex = "1";
 
   const delBtn = document.createElement("button");
@@ -229,8 +229,10 @@ function recordEvent(event) {
   logEntry.appendChild(logText);
   logEntry.appendChild(delBtn);
   logContainer.appendChild(logEntry);
-}
 
+  // ✅ 這行是送資料到 Google Sheet
+  sendToGoogleSheet(timeStamp, nowTime, event);
+}
 let beatInterval = null;
 
 function playBeep() {
@@ -356,7 +358,21 @@ function playBeep() {
   beep.currentTime = 0;
   beep.play();
 }
-  
+function sendToGoogleSheet(timeCode, realTime, event) {
+  fetch("https://script.google.com/macros/s/AKfycbwnnv0blAD56hjFlx3xEdeExJktzzPcepR_bhv33mfu4HiEXePqjGP2ZMZ8xns6Jwmh2Q/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      timeCode: timeCode,
+      realTime: realTime,
+      event: event
+    })
+  })
+  .then(response => console.log("✅ 已送出至 Google Sheet"))
+  .catch(error => console.error("❌ 發送失敗", error));
+}  
 </script>
 
 </body>
