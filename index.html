@@ -309,21 +309,45 @@ function recordEndoTube() {
 }
 function resetLog() {
   if (confirm("確定要清除所有紀錄？")) {
+    // 清除紀錄內容
     document.getElementById("log").innerText = "";
     epiCount = amioCount = lidoCount = shockCount = 0;
     ["epiCount", "amioCount", "lidoCount", "shockCount"].forEach(id => document.getElementById(id).innerText = "0");
+
+    // 恢復可再按一次藥物按鈕
     ["amioBtn", "lidoBtn"].forEach(id => {
       const btn = document.getElementById(id);
-      btn.disabled = false;
-      btn.style.opacity = 1;
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = 1;
+      }
     });
-    startTime = null;
-    timers.forEach(t => clearTimeout(t) || clearInterval(t));
-    timers = [];
 
-    // ✅ 新增這段來清除輸入欄位的內容
+    // 清除所有輸入欄位（text、number、textarea）
     const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
     inputs.forEach(input => input.value = "");
+
+    // 關閉聲音：如果使用 setInterval 播放節拍器
+    if (typeof beatInterval !== "undefined") {
+      clearInterval(beatInterval);
+    }
+
+    // 重設靜音按鈕狀態
+    isMuted = false;
+    const muteBtn = document.getElementById("muteBtn");
+    if (muteBtn) {
+      muteBtn.innerText = "Mute";
+      muteBtn.className = "dark";
+    }
+
+    // 重置所有 setTimeout / setInterval 計時器
+    if (timers && Array.isArray(timers)) {
+      timers.forEach(t => clearTimeout(t) || clearInterval(t));
+    }
+    timers = [];
+
+    // 清除時間
+    startTime = null;
   }
 }
 function toggleGender(selected) {
