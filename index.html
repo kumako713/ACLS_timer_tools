@@ -357,7 +357,7 @@ function playBeep() {
   beep.play();
 }
 function sendToGoogleSheet(timeCode, realTime, event) {
-  fetch("https://script.google.com/macros/s/AKfycbwnnv0blAD56hjFlx3xEdeExJktzzPcepR_bhv33mfu4HiEXePqjGP2ZMZ8xns6Jwmh2Q/exec", {
+  fetch("https://script.google.com/macros/s/AKfycby4egfzL7asWpryk5rmIPQowvVOegRmsf0-c20h2QeTTMAGN-rq0HxR1UYh2ZscIEd96A/exec", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ timeCode, realTime, event })
