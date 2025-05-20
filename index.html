@@ -201,7 +201,6 @@ function recordEvent(event) {
   const nowTime = now.toLocaleTimeString('zh-TW', { hour12: false });
 
   const logContainer = document.getElementById("log");
-
   const logEntry = document.createElement("div");
   logEntry.style.display = "flex";
   logEntry.style.alignItems = "center";
@@ -211,6 +210,21 @@ function recordEvent(event) {
   const logText = document.createElement("span");
   logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
   logText.style.flex = "1";
+
+  // ✅ 根據 event 文字內容決定樣式
+  if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
+    logText.style.color = "blue";
+    logText.style.fontWeight = "bold";
+  } else if (/Shock/.test(event)) {
+    logText.style.backgroundColor = "red";
+    logText.style.color = "yellow";
+    logText.style.fontWeight = "bold";
+    logText.style.padding = "2px 6px";
+    logText.style.borderRadius = "4px";
+  } else if (/IV|IO|Endo|I\.V\.|I\.O\./.test(event)) {
+    logText.style.color = "olive";
+    logText.style.fontWeight = "bold";
+  }
 
   const delBtn = document.createElement("button");
   delBtn.textContent = "刪除";
@@ -229,8 +243,6 @@ function recordEvent(event) {
   logEntry.appendChild(logText);
   logEntry.appendChild(delBtn);
   logContainer.appendChild(logEntry);
-
-
 }
 let beatInterval = null;
 
