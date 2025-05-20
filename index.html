@@ -349,6 +349,9 @@ function resetLog() {
 
     // 清除時間
     startTime = null;
+    // 還原 5H5T 按鈕樣式
+    const toggleButtons = document.querySelectorAll(".brown, .orange");
+    toggleButtons.forEach(btn => {btn.classList.remove("toggled");});
   }
 }
 function toggleGender(selected) {
