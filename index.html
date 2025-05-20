@@ -242,9 +242,8 @@ function startCPR() {
   timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
 
   if (!beatInterval) {
-    playBeep(); // 立即嗶第一下
-    beatInterval = setInterval(playBeep, 545); // 每 545 毫秒嗶一次（110bpm）
-  }
+    startBeat(); // 使用精準的節拍器邏輯
+    }, 2000);
 }
 
 function stopCPR() {
@@ -252,7 +251,6 @@ function stopCPR() {
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
   timers = [];
   if (beatInterval) {
-    clearInterval(beatInterval);
     beatInterval = null;
   }
 }
@@ -314,7 +312,10 @@ function resetLog() {
     document.getElementById("log").innerText = "";
     epiCount = amioCount = lidoCount = shockCount = 0;
     ["epiCount", "amioCount", "lidoCount", "shockCount"].forEach(id => document.getElementById(id).innerText = "0");
-
+    
+    // 停止節拍器
+    stopBeat();
+    
     // 恢復可再按一次藥物按鈕
     ["amioBtn", "lidoBtn"].forEach(id => {
       const btn = document.getElementById(id);
@@ -383,7 +384,27 @@ function playBeep() {
   beep.currentTime = 0;
   beep.play();
 }
+let beatStartTime = null;
+let beatTimer = null;
+const beatIntervalMs = 545; // 110 BPM
 
+function playSteadyBeat() {
+  const now = performance.now();
+  const elapsed = now - beatStartTime;
+  const nextTime = beatIntervalMs - (elapsed % beatIntervalMs);
+
+  playBeep(); // 播放音效
+  beatTimer = setTimeout(playSteadyBeat, nextTime); // 安排下一次播放
+}
+
+function startBeat() {
+  beatStartTime = performance.now();
+  playSteadyBeat(); // 啟動節拍
+}
+
+function stopBeat() {
+  clearTimeout(beatTimer); // 停止節拍器
+}
 </script>
 
 </body>
