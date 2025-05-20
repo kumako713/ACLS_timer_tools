@@ -257,10 +257,6 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   delBtn.onclick = function () {
   if (confirm("是否刪除？")) {
     const text = logText.textContent;
-    logContainer.removeChild(logEntry);  // ✅ 刪除紀錄
-    updateCountsFromLog();              // ✅ 即時更新計數與按鈕狀態
-  }
-};
 
     // 檢查刪除的是哪個藥物紀錄
     if (text.includes("Amiodarone")) {
@@ -279,7 +275,8 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
       btn.style.opacity = btn.disabled ? 0.5 : 1;
     }
 
-    logContainer.removeChild(logEntry);
+    logContainer.removeChild(logEntry);  // ✅ 正確移除紀錄
+    updateCountsFromLog();               // ✅ 同步更新計數
   }
 };
 
