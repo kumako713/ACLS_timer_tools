@@ -230,8 +230,7 @@ function recordEvent(event) {
   logEntry.appendChild(delBtn);
   logContainer.appendChild(logEntry);
 
-  // ✅ 這行是送資料到 Google Sheet
-  sendToGoogleSheet(timeStamp, nowTime, event);
+
 }
 let beatInterval = null;
 
@@ -356,16 +355,7 @@ function playBeep() {
   beep.currentTime = 0;
   beep.play();
 }
-function sendToGoogleSheet(timeCode, realTime, event) {
-  fetch("https://script.google.com/macros/s/AKfycby4egfzL7asWpryk5rmIPQowvVOegRmsf0-c20h2QeTTMAGN-rq0HxR1UYh2ZscIEd96A/exec", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ timeCode, realTime, event })
-  })
-  .then(res => res.text())
-  .then(txt => console.log("✅ 送出結果：", txt))
-  .catch(err => console.error("❌ 錯誤：", err));
-}  
+
 </script>
 
 </body>
