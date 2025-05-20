@@ -230,6 +230,12 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   logText.style.fontWeight = "bold";
   logText.style.padding = "2px 6px";
   logText.style.borderRadius = "4px";
+} else if (/ROSC/.test(event)) {
+  logText.style.backgroundColor = "#4fc3f7"; // 天空藍
+  logText.style.color = "white";
+  logText.style.fontWeight = "bold";
+  logText.style.padding = "2px 6px";
+  logText.style.borderRadius = "4px";
 } else if (/IV|IO|Endo|I\.V\.|I\.O\./.test(event)) {
   logText.style.color = "olive";
   logText.style.fontWeight = "bold";
