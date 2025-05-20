@@ -79,7 +79,7 @@
   </style>
 </head>
 <body>
-<audio id="beepSound" src="beep-07a.mp3"></audio>
+<audio id="beepSound" src="beep_logic110.mp3" loop></audio>
   
 <!-- 標題與時間 -->
 <div class="center-row"><div class="header-text">ACLS Timer Tool</div></div>
@@ -429,27 +429,65 @@ function playBeep() {
   beep.currentTime = 0;
   beep.play();
 }
-let beatStartTime = null;
-let beatTimer = null;
-const beatIntervalMs = 545; // 110 BPM
-
-function playSteadyBeat() {
-  const now = performance.now();
-  const elapsed = now - beatStartTime;
-  const nextTime = beatIntervalMs - (elapsed % beatIntervalMs);
-
-  playBeep(); // 播放音效
-  beatTimer = setTimeout(playSteadyBeat, nextTime); // 安排下一次播放
+function startBeepLoop() {
+  const beep = document.getElementById("beepSound");
+  beep.volume = 1;
+  beep.currentTime = 0;
+  beep.play();
 }
 
-function startBeat() {
-  beatStartTime = performance.now();
-  playSteadyBeat(); // 啟動節拍
+function muteBeep() {
+  const beep = document.getElementById("beepSound");
+  beep.volume = 0;
 }
 
-function stopBeat() {
-  clearTimeout(beatTimer); // 停止節拍器
+function unmuteBeep() {
+  const beep = document.getElementById("beepSound");
+  beep.volume = 1;
 }
+
+function stopBeepLoop() {
+  const beep = document.getElementById("beepSound");
+  beep.pause();
+  beep.currentTime = 0;
+  beep.volume = 0;
+}
+function startCPR() {
+  recordEvent("CPR 開始");
+  if (!startTime) startTime = new Date();
+
+  timers.push(setInterval(() => alert("提醒：CPR 執行中，請考慮 5H5T？"), 120000));
+
+  setTimeout(() => {
+    startBeepLoop(); // 🔊 延遲 1 秒播放循環音效
+  }, 1000);
+}
+function aedAnalyze() {
+  muteBeep(); // 🔇 靜音播放音效
+  recordEvent("AED 分析開始（倒數 10 秒）");
+
+  setTimeout(() => {
+    recordEvent("AED 分析結束");
+    unmuteBeep(); // 🔊 恢復音效音量
+  }, 10000);
+
+  timers.push(setTimeout(() => alert("30秒後心律分析"), 90000));
+  timers.push(setTimeout(() => alert("10秒後心律分析"), 110000));
+}
+function stopCPR() {
+  recordEvent("CPR 停止");
+  timers.forEach(t => clearTimeout(t) || clearInterval(t));
+  timers = [];
+  stopBeepLoop(); // 🛑 停止音效播放
+}
+function resetLog() {
+  if (confirm("確定要清除所有紀錄？")) {
+    // ...其餘邏輯
+    stopBeepLoop(); // 🛑 停止音效播放與靜音
+    // ...其餘邏輯
+  }
+}
+
 </script>
 
 </body>
