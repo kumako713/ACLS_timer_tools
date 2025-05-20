@@ -528,11 +528,29 @@ function showISBAR() {
       medStats[name].last = time;
     }
   });
-
-  let meds = "";
+function getLastMedTime(medStats) {
+  let latest = null;
+  let lastMed = "";
   for (const [name, stat] of Object.entries(medStats)) {
-    meds += `- ${name} ${stat.count} 次，最後一次給藥時間是 ${stat.last}\n`;
+    if (stat.last) {
+      const t = new Date("1970-01-01T" + stat.last + "Z");
+      if (!latest || t > latest) {
+        latest = t;
+        lastMed = name;
+      }
+    }
   }
+  return latest ? `${latest.toTimeString().substring(0, 8)} ${lastMed}` : "無紀錄";
+}
+  const aText = `A:
+(心電圖自行判斷)
+給予藥物
+Epinephrine：${medStats.Epinephrine?.count || 0} 次
+Amiodarone：${medStats.Amiodarone?.count || 0} 次
+Lidocaine：${medStats.Lidocaine?.count || 0} 次
+
+最後一次給藥
+${getLastMedTime(medStats)}`;
 
   const isbar = `
 【ISBAR 彙整】
@@ -545,14 +563,12 @@ ${gender}患者 ${age} 歲，${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR
 B：
 過去病史有 ${history}。
 
-A：
-心電圖請自行判讀。
-已給予藥物：
-${meds.trim()}
+${aText}
 
 R：
 建議：請自行評估。
   `;
+  navigator.clipboard.writeText(isbar);
   alert(isbar);
 }
 
