@@ -359,17 +359,12 @@ function playBeep() {
 function sendToGoogleSheet(timeCode, realTime, event) {
   fetch("https://script.google.com/macros/s/AKfycbwnnv0blAD56hjFlx3xEdeExJktzzPcepR_bhv33mfu4HiEXePqjGP2ZMZ8xns6Jwmh2Q/exec", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      timeCode: timeCode,
-      realTime: realTime,
-      event: event
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ timeCode, realTime, event })
   })
-  .then(response => console.log("✅ 已送出至 Google Sheet"))
-  .catch(error => console.error("❌ 發送失敗", error));
+  .then(res => res.text())
+  .then(txt => console.log("✅ 送出結果：", txt))
+  .catch(err => console.error("❌ 錯誤：", err));
 }  
 </script>
 
