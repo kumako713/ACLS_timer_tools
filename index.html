@@ -257,10 +257,18 @@ function stopCPR() {
   }
 }
 function aedAnalyze() {
+  stopBeat(); // ✅ 暫停節拍器
   recordEvent("AED 分析開始（倒數 10 秒）");
-  setTimeout(() => recordEvent("AED 分析結束"), 10000);
-    timers.push(setTimeout(() => {alert("30秒後心律分析");}, 90000));
-    timers.push(setTimeout(() => {alert("10秒後心律分析");}, 110000));
+
+  // 10秒後分析結束，恢復節拍器
+  setTimeout(() => {
+    recordEvent("AED 分析結束");
+    startBeat(); // ✅ 重新啟動節拍器
+  }, 10000);
+
+  // 額外提醒
+  timers.push(setTimeout(() => alert("30秒後心律分析"), 90000));
+  timers.push(setTimeout(() => alert("10秒後心律分析"), 110000));
 }
 
 function switchCPR() {
