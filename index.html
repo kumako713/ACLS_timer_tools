@@ -267,10 +267,6 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
 let beatInterval = null;
 
 
-  // 額外提醒
-  timers.push(setTimeout(() => alert("30秒後心律分析"), 90000));
-  timers.push(setTimeout(() => alert("10秒後心律分析"), 110000));
-}
 
 function switchCPR() {
   recordEvent("CPR 換人");
@@ -440,18 +436,8 @@ function startCPR() {
     startBeepLoop(); // 🔊 延遲 1 秒播放循環音效
   }, 1000);
 }
-function aedAnalyze() {
-  muteBeep(); // 🔇 靜音播放音效
-  recordEvent("AED 分析開始（倒數 10 秒）");
 
-  setTimeout(() => {
-    recordEvent("AED 分析結束");
-    unmuteBeep(); // 🔊 恢復音效音量
-  }, 10000);
 
-  timers.push(setTimeout(() => alert("30秒後心律分析"), 90000));
-  timers.push(setTimeout(() => alert("10秒後心律分析"), 110000));
-}
 function stopCPR() {
   recordEvent("CPR 停止");
   timers.forEach(t => clearTimeout(t) || clearInterval(t));
@@ -513,18 +499,18 @@ for (let i = logs.length - 1; i >= 0; i--) {
     }
   }
 }
-  const aText = `A:
-(心電圖自行判斷)
-給予藥物
-Epinephrine：${medStats.Epinephrine?.count || 0} 次
-Amiodarone：${medStats.Amiodarone?.count || 0} 次
-Lidocaine：${medStats.Lidocaine?.count || 0} 次
+ const aText = `A:
+ (心電圖自行判斷)
+ 給予藥物
+ Epinephrine：${medStats.Epinephrine?.count || 0} 次
+ Amiodarone：${medStats.Amiodarone?.count || 0} 次
+ Lidocaine：${medStats.Lidocaine?.count || 0} 次
 
-最後一次給藥
-${lastMedLine || "尚無紀錄"}`;
+ 最後一次給藥
+ ${lastMedLine || "尚無紀錄"}
 
-其他處置/藥物：${otherNotes}
-`;
+ 其他處置/藥物：${otherNotes}
+ `;
 
   const isbar = `
 【ISBAR 彙整】
