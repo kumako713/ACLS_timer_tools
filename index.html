@@ -105,16 +105,16 @@
   <!-- SpO2 改為粗體並換行顯示輸入框與 % -->
   <div style="margin-top: 12px;"><strong>SpO₂</strong></div>
   <div style="display: flex; align-items: center; margin-top: 4px;">
-    <input type="text" style="width: 30px; margin-right: 6px;" />
-    <span style="margin: 0 6px;">→</span>
-    <input type="text" style="width: 30px; margin-right: 6px;" />
-    <span>%</span>
-  </div>
+  <input type="text" id="spo2Left" style="width: 60px; margin-right: 6px;" />
+  <span style="margin: 0 6px;">→</span>
+  <input type="text" id="spo2Right" style="width: 60px; margin-right: 6px;" />
+  <span>%</span>
+</div>
 
   <!-- BT 改為粗體且與輸入框同行，顯示度C -->
   <div style="display: flex; align-items: center; margin-top: 12px;">
     <strong style="margin-right: 8px;">BT</strong>
-    <input type="text" style="width: 60px; margin-right: 6px;" />
+    <input type="text" id="btInput" style="width: 60px; margin-right: 6px;" />
     <span>°C</span>
   </div>
 
@@ -123,8 +123,8 @@
 </div>
   <!-- 右邊欄位 -->
   <div class="column" style="align-items: flex-start;">
-    <label for="history" style="font-weight: bold; margin-bottom: 5px;">Chief Complant</label>
-    <textarea id="history" rows="2" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+    <label for="chiefComplaint" style="font-weight: bold; margin-bottom: 5px;">Chief Complant</label>
+    <textarea id="chiefComplaint" rows="2" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
     
     <label for="history" style="font-weight: bold; margin-bottom: 5px;">History/ Allergy</label>
     <textarea id="history" rows="2" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
@@ -164,21 +164,23 @@
   </div>
 </div>
 
-<!-- ROSC 按鈕 -->
+<!-- Mute -->
 <div class="center-row">
-  <div style="width: 100%; display: flex; justify-content: center;">
-    <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-  </div>
+  <button id="muteBtn" class="dark" onclick="toggleMute()">Mute</button>
 </div>
 
-<!-- 空一列 -->
+<!-- ROSC 與 ISBAR -->
+<div class="center-row">
+  <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+  <button class="gray" onclick="showISBAR()">ISBAR</button>
+</div>
+
+<!-- 空行 -->
 <div style="height: 20px;"></div>
 
-<!-- Reset 按鈕 -->
+<!-- Reset -->
 <div class="center-row">
-  <div style="width: 100%; display: flex; justify-content: center;">
-    <button class="gray" onclick="resetLog()">Reset</button>
-  </div>
+  <button class="gray" onclick="resetLog()">Reset</button>
 </div>
 
 <!-- 紀錄區 -->
@@ -485,7 +487,70 @@ function stopCPR() {
   timers = [];
   stopBeepLoop(); // 🛑 停止音效播放
 }
+function showISBAR() {
+  const chief = document.getElementById("chiefComplaint")?.value || "（未填寫）";
+  const history = document.getElementById("history")?.value || "（未填寫）";
+  const spo2Left = document.querySelector("#spo2Left")?.value || "??";
+  const spo2Right = document.querySelector("#spo2Right")?.value || "??";
+  const btValue = document.getElementById("btInput")?.value || "未填";
+  
+  let cprStart = null, cprStop = null;
+  const logs = document.querySelectorAll("#log div span");
+  logs.forEach(span => {
+    const text = span.textContent;
+    if (text.includes("CPR 開始")) cprStart = extractTime(text);
+    if (text.includes("CPR 停止")) cprStop = extractTime(text);
+  });
 
+  let cprDuration = "（尚未結束）";
+  if (cprStart && cprStop) {
+    const mins = Math.floor((cprStop - cprStart) / 60000);
+    cprDuration = `${mins} 分鐘`;
+  }
+
+  const medStats = {};
+  logs.forEach(span => {
+    const text = span.textContent;
+    const match = text.match(/\[(\d{2}:\d{2}:\d{2})\] .*?(Epinephrine|Amiodarone|Lidocaine).*?給藥/);
+    if (match) {
+      const [_, time, name] = match;
+      if (!medStats[name]) medStats[name] = { count: 0, last: null };
+      medStats[name].count++;
+      medStats[name].last = time;
+    }
+  });
+
+  let meds = "";
+  for (const [name, stat] of Object.entries(medStats)) {
+    meds += `- ${name} ${stat.count} 次，最後一次給藥時間是 ${stat.last}\n`;
+  }
+
+  const isbar = `
+【ISBAR 彙整】
+I：
+醫師好，我是署P91。
+
+S：
+患者 ${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}。
+
+B：
+過去病史有 ${history}。
+
+A：
+心電圖請自行判讀。
+已給予藥物：
+${meds.trim()}
+
+R：
+建議：請自行評估。
+  `;
+  alert(isbar);
+}
+
+function extractTime(text) {
+  const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);
+  return match ? new Date("1970-01-01T" + match[1] + "Z") : null;
+}
 </script>
 
 </body>
