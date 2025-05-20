@@ -81,6 +81,12 @@
   </style>
 </head>
 <body>
+
+<div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+background-color: #333; color: #fff; padding: 10px 20px; border-radius: 6px;
+opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-size: 16px;">
+</div>
+
 <audio id="beepSound" src="beep_logic110_1.mp3" loop></audio>
   
 <!-- 標題與時間 -->
@@ -195,6 +201,16 @@ let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 let timers = [];
 let endoFixCm = null;
 
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.style.opacity = "1";
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+  }, 2000); // 2 秒後淡出
+}
+
 function updateClock() {
   const now = new Date();
   document.getElementById("clock").innerText =
@@ -284,6 +300,7 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   logEntry.appendChild(logText);
   logEntry.appendChild(delBtn);
   logContainer.appendChild(logEntry);
+  showToast(event);  // ✅ 顯示訊息
 }
 let beatInterval = null;
 
