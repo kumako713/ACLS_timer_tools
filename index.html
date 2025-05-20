@@ -493,6 +493,13 @@ function stopCPR() {
 function showISBAR() {
   const chief = document.getElementById("chiefComplaint")?.value || "（未填寫）";
   const history = document.getElementById("history")?.value || "（未填寫）";
+  const age = document.getElementById("ageInput")?.value || "？";
+  let gender = "（未選）";
+  if (document.getElementById("maleBtn").classList.contains("selected")) {
+    gender = "男性";
+  } else if (document.getElementById("femaleBtn").classList.contains("selected")) {
+    gender = "女性";
+  }
   const spo2Left = document.querySelector("#spo2Left")?.value || "??";
   const spo2Right = document.querySelector("#spo2Right")?.value || "??";
   const btValue = document.getElementById("btInput")?.value || "未填";
@@ -534,7 +541,7 @@ I：
 醫師好，我是署P91。
 
 S：
-患者 ${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}。
+${gender}患者 ${age} 歲，${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}。
 
 B：
 過去病史有 ${history}。
