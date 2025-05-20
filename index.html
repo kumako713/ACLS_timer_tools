@@ -266,7 +266,21 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
 }
 let beatInterval = null;
 
+function aedAnalyze() {
+  recordEvent("AED 分析中……");
 
+  // 暫時靜音音效（但保持播放不中斷）
+  muteBeep();
+
+  setTimeout(() => {
+    recordEvent("AED 分析完畢");
+    unmuteBeep();
+
+    // 於分析完畢後開始計算跳出提醒時間
+    timers.push(setTimeout(() => alert("30秒後分析心律"), 90000));
+    timers.push(setTimeout(() => alert("10秒後分析心律"), 110000));
+  }, 10000);
+}
 
 function switchCPR() {
   recordEvent("CPR 換人");
@@ -505,6 +519,8 @@ for (let i = logs.length - 1; i >= 0; i--) {
  Epinephrine：${medStats.Epinephrine?.count || 0} 次
  Amiodarone：${medStats.Amiodarone?.count || 0} 次
  Lidocaine：${medStats.Lidocaine?.count || 0} 次
+
+ Shock 次數：${document.getElementById("shockCount").innerText} 次
 
  最後一次給藥
  ${lastMedLine || "尚無紀錄"}
