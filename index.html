@@ -164,18 +164,19 @@
   </div>
 </div>
 
-<!-- 空一列區隔 + Mute 按鈕 + ROSC/Reset -->
-<div class="center-row" style="height: 20px;"></div>
-
+<!-- ROSC 按鈕 -->
 <div class="center-row">
-  <button id="muteBtn" class="dark" onclick="toggleMute()">Mute</button>
-</div>
-
-<div class="center-row">
-  <div style="width: 45%; display: flex; justify-content: center;">
+  <div style="width: 100%; display: flex; justify-content: center;">
     <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
   </div>
-  <div style="width: 45%; display: flex; justify-content: center;">
+</div>
+
+<!-- 空一列 -->
+<div style="height: 20px;"></div>
+
+<!-- Reset 按鈕 -->
+<div class="center-row">
+  <div style="width: 100%; display: flex; justify-content: center;">
     <button class="gray" onclick="resetLog()">Reset</button>
   </div>
 </div>
