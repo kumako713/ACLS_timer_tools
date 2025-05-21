@@ -109,7 +109,17 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
   <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
   <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
   <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
+<!-- HR -->
+<div style="margin-top: 12px;"><strong>HR</strong></div>
+<div><input type="text" id="hrInput" style="width: 50px;" /></div>
 
+<!-- BP -->
+<div style="margin-top: 12px;"><strong>BP</strong></div>
+<div style="display: flex; align-items: center;">
+  <input type="text" id="bpSysInput" style="width: 40px; margin-right: 6px;" />
+  <span>/</span>
+  <input type="text" id="bpDiaInput" style="width: 40px; margin-left: 6px;" />
+</div>
   <!-- SpO2 改為粗體並換行顯示輸入框與 % -->
   <div style="margin-top: 12px;"><strong style="font-size: 16px;">SpO₂</strong></div>
   <div style="display: flex; align-items: center; margin-top: 4px;">
@@ -545,8 +555,12 @@ function showISBAR() {
   }
   const spo2Left = document.querySelector("#spo2Left")?.value || "??";
   const spo2Right = document.querySelector("#spo2Right")?.value || "??";
-  const btValue = document.getElementById("btInput")?.value || "未填";
-  
+  const btValue = document.getElementById("btInput")?.value || "??";
+  const hrValue = document.getElementById("hrInput")?.value || "??";
+  const bpSys = document.getElementById("bpSysInput")?.value || "??";
+  const bpDia = document.getElementById("bpDiaInput")?.value || "??";
+
+
   let cprStart = null, cprStop = null;
   const logs = document.querySelectorAll("#log div span");
   logs.forEach(span => {
@@ -554,7 +568,17 @@ function showISBAR() {
     if (text.includes("CPR 開始")) cprStart = extractTime(text);
     if (text.includes("CPR 停止")) cprStop = extractTime(text);
   });
-
+  let roscTime = "尚無紀錄";
+  for (let i = 0; i < logs.length; i++) {
+    const text = logs[i].textContent;
+    if (text.includes("ROSC")) {
+      const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);  // 抓 current time
+      if (match) {
+        roscTime = match[1];
+      }
+      break;
+  }
+}
   let cprDuration = "（尚未結束）";
   if (cprStart && cprStop) {
     const mins = Math.floor((cprStop - cprStart) / 60000);
@@ -606,10 +630,10 @@ for (let i = logs.length - 1; i >= 0; i--) {
 
  Shock 次數：${document.getElementById("shockCount").innerText} 次
 
- Endo(號數)：${endoFixCm ? endoFixCm + " cm" : "尚無紀錄"}
+ Endo(號數)：${endoFixCm ? endoFixCm + " cm" : "??"}
  
  最後一次給藥
- ${lastMedLine || "尚無紀錄"}
+ ${lastMedLine || "??"}
 
  其他處置/藥物：${otherNotes}
  `;
@@ -620,7 +644,8 @@ I：
 醫師好，我是署P91。
 
 S：
-${gender}患者 ${age} 歲，${chief}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}。
+${gender}患者 ${age} 歲，${chief}，HR ${hrValue}，BP ${bpSys}/${bpDia}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}，ROSC 時間：${roscTime}
+。
 
 B：
 病史/過敏史： ${history}。
