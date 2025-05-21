@@ -109,10 +109,16 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
   <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
   <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
   <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
-<!-- HR 同一列 -->
-<div style="display: flex; align-items: center; margin-top: 12px;">
-  <strong style="margin-right: 8px;">HR</strong>
-  <input type="text" id="hrInput" style="width: 40px;" />
+<!-- RR 與 HR 同列排列 -->
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+  <div style="display: flex; align-items: center;">
+    <strong style="margin-right: 6px;">RR</strong>
+    <input type="text" id="rrInput" style="width: 35px;" />
+  </div>
+  <div style="display: flex; align-items: center;">
+    <strong style="margin-right: 6px;">HR</strong>
+    <input type="text" id="hrInput" style="width: 35px;" />
+  </div>
 </div>
 
 <!-- BP 同一列 -->
@@ -559,7 +565,8 @@ function showISBAR() {
   const spo2Left = document.querySelector("#spo2Left")?.value || "??";
   const spo2Right = document.querySelector("#spo2Right")?.value || "??";
   const btValue = document.getElementById("btInput")?.value || "??";
-  const hrValue = document.getElementById("hrInput")?.value || "??";
+  const rrValue = document.getElementById("rrInput")?.value || "未填";
+  const hrValue = document.getElementById("hrInput")?.value || "未填";
   const bpSys = document.getElementById("bpSysInput")?.value || "??";
   const bpDia = document.getElementById("bpDiaInput")?.value || "??";
 
@@ -647,7 +654,7 @@ I：
 醫師好，我是署P91。
 
 S：
-${gender}患者 ${age} 歲，${chief}，HR ${hrValue}，BP ${bpSys}/${bpDia}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}，ROSC 時間：${roscTime}
+${gender}患者 ${age} 歲，${chief}，RR ${rrValue}，HR ${hrValue}，BP ${bpSys}/${bpDia}，SpO₂ ${spo2Left}→${spo2Right}%，CPR 已持續 ${cprDuration}，ROSC 時間：${roscTime}
 。
 
 B：
