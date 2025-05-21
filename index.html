@@ -70,6 +70,23 @@
       font-size: 18px;
       color: #333;
     }
+    #toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 0, 0, 0.5);  /* 🔴 紅色底，透明度 50% */
+      color: yellow;                          /* 🟡 黃色字 */
+      font-weight: bold;                      /* 粗體字 */
+      font-size: 22px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
     .header-text {
       font-size: 24px;
       background-color: #e53935;
