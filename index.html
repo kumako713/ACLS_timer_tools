@@ -109,17 +109,20 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
   <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
   <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
   <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
-<!-- HR -->
-<div style="margin-top: 12px;"><strong>HR</strong></div>
-<div><input type="text" id="hrInput" style="width: 50px;" /></div>
-
-<!-- BP -->
-<div style="margin-top: 12px;"><strong>BP</strong></div>
-<div style="display: flex; align-items: center;">
-  <input type="text" id="bpSysInput" style="width: 40px; margin-right: 6px;" />
-  <span>/</span>
-  <input type="text" id="bpDiaInput" style="width: 40px; margin-left: 6px;" />
+<!-- HR 同一列 -->
+<div style="display: flex; align-items: center; margin-top: 12px;">
+  <strong style="margin-right: 8px;">HR</strong>
+  <input type="text" id="hrInput" style="width: 40px;" />
 </div>
+
+<!-- BP 同一列 -->
+<div style="display: flex; align-items: center; margin-top: 12px;">
+  <strong style="margin-right: 8px;">BP</strong>
+  <input type="text" id="bpSysInput" style="width: 35px; margin-right: 4px;" />
+  <span>/</span>
+  <input type="text" id="bpDiaInput" style="width: 35px; margin-left: 4px;" />
+</div>
+  
   <!-- SpO2 改為粗體並換行顯示輸入框與 % -->
   <div style="margin-top: 12px;"><strong style="font-size: 16px;">SpO₂</strong></div>
   <div style="display: flex; align-items: center; margin-top: 4px;">
