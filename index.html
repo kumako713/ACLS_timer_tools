@@ -194,11 +194,6 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
 <!-- 空行 -->
 <div style="height: 20px;"></div>
 
-<!-- Mute -->
-<div class="center-row">
-  <button id="muteBtn" class="dark" onclick="toggleMute()">Mute</button>
-</div>
-
 <!-- ROSC 與 ISBAR -->
 <div class="center-row">
   <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
@@ -212,6 +207,19 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
 
 <!-- 紀錄區 -->
 <div id="log"></div>
+
+<!-- 這是 Endo 的自訂彈出視窗 -->
+<div id="endoModal" style="display: none; position: fixed; top: 30%; left: 50%; transform: translateX(-50%);
+background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center;">
+  <p style="margin-bottom: 10px; font-weight: bold;">請選擇 Fix 長度：</p>
+  <div style="display: flex; gap: 10px; justify-content: center;">
+    <button onclick="selectEndoFix(19)">19</button>
+    <button onclick="selectEndoFix(20)">20</button>
+    <button onclick="selectEndoFix(21)">21</button>
+    <button onclick="selectEndoFix(22)">22</button>
+    <button onclick="selectEndoFix(23)">23</button>
+  </div>
+</div>
 
 <!-- JavaScript 功能 -->
 <script>
@@ -387,12 +395,15 @@ function recordShock() {
   updateCountsFromLog();
 }
 function recordEndoTube() {
-  const cm = prompt("確認 Fix\n請輸入數值（19-23cm）或取消：", "20");
-  if (cm && ["19", "20", "21", "22", "23"].includes(cm)) {
-    endoFixCm = cm; // ✅ 儲存使用者輸入的 cm 值
-    recordEvent(`Endo Fix ${cm} cm`);
-  }
+  document.getElementById("endoModal").style.display = "block";
 }
+
+function selectEndoFix(cm) {
+  endoFixCm = cm;
+  recordEvent(`Endo Fix ${cm} cm`);
+  document.getElementById("endoModal").style.display = "none";
+}
+
 function resetLog() {
   if (confirm("確定要清除所有紀錄？")) {
     // 清除紀錄區
@@ -492,24 +503,14 @@ function toggleGender(selected) {
 function toggleMarker(btn) {
   btn.classList.toggle('toggled');
 }
-  let isMuted = false;
 
-function toggleMute() {
-  const btn = document.getElementById("muteBtn");
-  isMuted = !isMuted;
-  btn.innerText = isMuted ? "Unmute" : "Mute";
-  btn.className = isMuted ? "light" : "dark";
-  
-  const beep = document.getElementById("beepSound");
-  if (beep) beep.volume = isMuted ? 0 : 1;
-}
 
 function playBeep() {
-  if (isMuted) return;
   const beep = document.getElementById("beepSound");
   beep.currentTime = 0;
   beep.play();
 }
+  
 function startBeepLoop() {
   const beep = document.getElementById("beepSound");
   beep.volume = 1;
@@ -517,15 +518,6 @@ function startBeepLoop() {
   beep.play();
 }
 
-function muteBeep() {
-  const beep = document.getElementById("beepSound");
-  beep.volume = 0;
-}
-
-function unmuteBeep() {
-  const beep = document.getElementById("beepSound");
-  beep.volume = 1;
-}
 
 function stopBeepLoop() {
   const beep = document.getElementById("beepSound");
@@ -685,6 +677,8 @@ function extractTime(text) {
   return match ? new Date("1970-01-01T" + match[1] + "Z") : null;
 }
 </script>
+
+
 
 </body>
 </html>
