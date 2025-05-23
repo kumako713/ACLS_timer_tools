@@ -88,10 +88,19 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(90deg);
-      opacity: 0.5;
+      opacity: 0.4;
       z-index: -1;
-      width: 50%;
+      width: 55%;
       pointer-events: none;
+    }
+    .male-selected {
+      background-color: #2894FF !important;
+      color: white !important;
+    }
+
+    .female-selected {
+      background-color: #FF9797 !important;
+      color: white !important;
     }
   </style>
 </head>
@@ -237,8 +246,45 @@ background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20
   </div>
 </div>
 
+<!-- AED Rhythm Modal -->
+<div id="aedModal" style="display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%);
+background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center;">
+  <p style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">AED Rhythm</p>
+  <p style="font-weight: bold;">Pulseless</p>
+  <div style="margin-bottom: 8px;">
+    <button onclick="selectRhythm('pVT')">pVT</button>
+    <button onclick="selectRhythm('VF')">VF</button>
+    <button onclick="selectRhythm('PEA')">PEA</button>
+    <button onclick="selectRhythm('Asystole')">Asystole</button>
+  </div>
+  <p style="font-weight: bold;">Tachycardia</p>
+  <div style="margin-bottom: 4px;">
+    <button onclick="selectRhythm('ST')">ST</button>
+    <button onclick="selectRhythm('PSVT')">PSVT</button>
+    <button onclick="selectRhythm('MAT')">MAT</button>
+    <button onclick="selectRhythm('A-fib')">A-fib</button>
+    <button onclick="selectRhythm('AF')">AF</button>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <button onclick="selectRhythm('VT')">VT</button>
+    <button onclick="selectRhythm('Af+WPW')">Af+WPW</button>
+    <button onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
+  </div>
+  <p style="font-weight: bold;">Bradycardia</p>
+  <div style="margin-bottom: 4px;">
+    <button onclick="selectRhythm('SB')">SB</button>
+    <button onclick="selectRhythm('1°AVB')">1°AVB</button>
+    <button onclick="selectRhythm('2°-1AVB')">2°-1AVB</button>
+  </div>
+  <div style="margin-bottom: 8px;">
+    <button onclick="selectRhythm('2°-2AVB')">2°-2AVB</button>
+    <button onclick="selectRhythm('3°AVB')">3°AVB</button>
+  </div>
+</div>
+
 <!-- JavaScript 功能 -->
 <script>
+let lastRhythm = null;
 let startTime = null;
 let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 let timers = [];
@@ -279,6 +325,13 @@ function recordEvent(event) {
   logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
   logText.style.flex = "1";
 
+function selectRhythm(rhythm) {
+  lastRhythm = rhythm;
+  recordEvent(`分析心律為：${rhythm}`);
+  document.getElementById("aedModal").style.display = "none";
+}
+
+  
   // ✅ 根據 event 文字內容決定樣式
 if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   logText.style.backgroundColor = "blue";
@@ -351,14 +404,12 @@ function aedAnalyze() {
   recordEvent("AED 分析中……");
   showToast("AED 10秒分析中……");
 
-  setTimeout(() => {
-    recordEvent("AED 分析完畢");
-    showToast("AED 分析完畢");
+  // 保留提示
+  timers.push(setTimeout(() => alert("🔔 30秒後分析心律"), 90000));
+  timers.push(setTimeout(() => alert("🔔 10秒後分析心律"), 110000));
 
-    // 安排提示
-    timers.push(setTimeout(() => alert("🔔 30秒後分析心律"), 90000));
-    timers.push(setTimeout(() => alert("🔔 10秒後分析心律"), 110000));
-  }, 10000);
+  // 新增心律分析視窗彈出
+  document.getElementById("aedModal").style.display = "block";
 }
 
 function switchCPR() {
@@ -506,12 +557,21 @@ function updateCountsFromLog() {
 function toggleGender(selected) {
   const maleBtn = document.getElementById("maleBtn");
   const femaleBtn = document.getElementById("femaleBtn");
-  if (selected === 'male') {
-    maleBtn.classList.toggle('selected');
-    femaleBtn.classList.remove('selected');
+
+  if (selected === "male") {
+    if (maleBtn.classList.contains("male-selected")) {
+      maleBtn.classList.remove("male-selected");
+    } else {
+      maleBtn.classList.add("male-selected");
+      femaleBtn.classList.remove("female-selected");
+    }
   } else {
-    femaleBtn.classList.toggle('selected');
-    maleBtn.classList.remove('selected');
+    if (femaleBtn.classList.contains("female-selected")) {
+      femaleBtn.classList.remove("female-selected");
+    } else {
+      femaleBtn.classList.add("female-selected");
+      maleBtn.classList.remove("male-selected");
+    }
   }
 }
 function toggleMarker(btn) {
@@ -563,9 +623,9 @@ function showISBAR() {
   const otherNotes = document.getElementById("otherNotes")?.value || "（未填寫）";
   const age = document.getElementById("ageInput")?.value || "？";
   let gender = "（未選）";
-  if (document.getElementById("maleBtn").classList.contains("selected")) {
+  if (document.getElementById("maleBtn").classList.contains("male-selected")) {
     gender = "男性";
-  } else if (document.getElementById("femaleBtn").classList.contains("selected")) {
+  } else if (document.getElementById("femaleBtn").classList.contains("female-selected")) {
     gender = "女性";
   }
   const spo2Left = document.querySelector("#spo2Left")?.value || "??";
@@ -638,7 +698,8 @@ for (let i = logs.length - 1; i >= 0; i--) {
   }
 }
  const aText = `A:
- (心電圖自行判斷)
+ EKG：${lastRhythm || "??"}
+ 
  給予藥物
  Epinephrine：${medStats.Epinephrine?.count || 0} 次
  Amiodarone：${medStats.Amiodarone?.count || 0} 次
@@ -647,7 +708,7 @@ for (let i = logs.length - 1; i >= 0; i--) {
  Shock 次數：${document.getElementById("shockCount").innerText} 次
 
  Endo(號數)：${endoFixCm ? endoFixCm + " cm" : "??"}
- 
+
  最後一次給藥
  ${lastMedLine || "??"}
 
@@ -669,7 +730,7 @@ B：
 ${aText}
 
 R：
-建議：請自行評估。
+建議：(請EMT自行評估匯報)。
   `;
   // 取得下方 log 所有紀錄內容
 const logText = Array.from(document.querySelectorAll("#log div span"))
