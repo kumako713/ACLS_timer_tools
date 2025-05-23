@@ -77,6 +77,7 @@
     }
     .header-text {
       font-size: 24px;
+      font-weight: bold;
       background-color: #e53935;
       color: white;
       padding: 10px 20px;
@@ -329,54 +330,33 @@ function recordEvent(event) {
   logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
   logText.style.flex = "1";
 
-  // 加入刪除按鈕（如有）
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "刪除";
-  delBtn.onclick = function () {
-    if (confirm("是否刪除？")) {
-      logContainer.removeChild(logEntry);
-    }
-  };
+  // 根據內容設樣式
+  if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
+    logText.style.backgroundColor = "blue";
+    logText.style.color = "white";
+    logText.style.fontWeight = "bold";
+    logText.style.padding = "2px 6px";
+    logText.style.borderRadius = "4px";
+  } else if (/Shock/.test(event)) {
+    logText.style.backgroundColor = "red";
+    logText.style.color = "yellow";
+    logText.style.fontWeight = "bold";
+    logText.style.padding = "2px 6px";
+    logText.style.borderRadius = "4px";
+  } else if (/^(IV|IO|Endo|Endo Fix \d{2} cm)$/.test(event)) {
+    logText.style.backgroundColor = "green";
+    logText.style.color = "white";
+    logText.style.fontWeight = "bold";
+    logText.style.padding = "2px 6px";
+    logText.style.borderRadius = "4px";
+  } else if (/ROSC/.test(event)) {
+    logText.style.backgroundColor = "#4fc3f7"; // 天空藍
+    logText.style.color = "white";
+    logText.style.fontWeight = "bold";
+    logText.style.padding = "2px 6px";
+    logText.style.borderRadius = "4px";
+  }
 
-  logEntry.appendChild(logText);
-  logEntry.appendChild(delBtn);
-  logContainer.appendChild(logEntry);
-}
-
-function selectRhythm(rhythm) {
-  lastRhythm = rhythm;
-  recordEvent(`分析心律為：${rhythm}`);
-  document.getElementById("aedModal").style.display = "none";
-}
-
-  
-  // ✅ 根據 event 文字內容決定樣式
-if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
-  logText.style.backgroundColor = "blue";
-  logText.style.color = "white";
-  logText.style.fontWeight = "bold";
-  logText.style.padding = "2px 6px";
-  logText.style.borderRadius = "4px";
-} else if (/Shock/.test(event)) {
-  logText.style.backgroundColor = "red";
-  logText.style.color = "yellow";
-  logText.style.fontWeight = "bold";
-  logText.style.padding = "2px 6px";
-  logText.style.borderRadius = "4px";
-} else if (/^(IV|IO|Endo|Endo Fix \d{2} cm)$/.test(event)) {
-  logText.style.backgroundColor = "green";
-  logText.style.color = "white";
-  logText.style.fontWeight = "bold";
-  logText.style.padding = "2px 6px";
-  logText.style.borderRadius = "4px";
-} else if (/ROSC/.test(event)) {
-  logText.style.backgroundColor = "#4fc3f7"; // 天空藍
-  logText.style.color = "white";
-  logText.style.fontWeight = "bold";
-  logText.style.padding = "2px 6px";
-  logText.style.borderRadius = "4px";
-}
-  
   const delBtn = document.createElement("button");
   delBtn.textContent = "刪除";
   delBtn.style.marginLeft = "10px";
@@ -386,36 +366,40 @@ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
   delBtn.style.borderRadius = "4px";
   delBtn.style.cursor = "pointer";
   delBtn.onclick = function () {
-  if (confirm("是否刪除？")) {
-    const text = logText.textContent;
-
-    // 檢查刪除的是哪個藥物紀錄
-    if (text.includes("Amiodarone")) {
-      amioCount = Math.max(0, amioCount - 1);
-      document.getElementById("amioCount").innerText = amioCount;
-      const btn = document.getElementById("amioBtn");
-      btn.disabled = amioCount >= 2;
-      btn.style.opacity = btn.disabled ? 0.5 : 1;
+    if (confirm("是否刪除？")) {
+      const text = logText.textContent;
+      if (text.includes("Amiodarone")) {
+        amioCount = Math.max(0, amioCount - 1);
+        document.getElementById("amioCount").innerText = amioCount;
+        const btn = document.getElementById("amioBtn");
+        btn.disabled = amioCount >= 2;
+        btn.style.opacity = btn.disabled ? 0.5 : 1;
+      }
+      if (text.includes("Lidocaine")) {
+        lidoCount = Math.max(0, lidoCount - 1);
+        document.getElementById("lidoCount").innerText = lidoCount;
+        const btn = document.getElementById("lidoBtn");
+        btn.disabled = lidoCount >= 2;
+        btn.style.opacity = btn.disabled ? 0.5 : 1;
+      }
+      logContainer.removeChild(logEntry);
+      updateCountsFromLog();
     }
-
-    if (text.includes("Lidocaine")) {
-      lidoCount = Math.max(0, lidoCount - 1);
-      document.getElementById("lidoCount").innerText = lidoCount;
-      const btn = document.getElementById("lidoBtn");
-      btn.disabled = lidoCount >= 2;
-      btn.style.opacity = btn.disabled ? 0.5 : 1;
-    }
-
-    logContainer.removeChild(logEntry);  // ✅ 正確移除紀錄
-    updateCountsFromLog();               // ✅ 同步更新計數
-  }
-};
+  };
 
   logEntry.appendChild(logText);
   logEntry.appendChild(delBtn);
   logContainer.appendChild(logEntry);
-  showToast(event);  // ✅ 顯示訊息
+  showToast(event);
 }
+
+function selectRhythm(rhythm) {
+  lastRhythm = rhythm;
+  recordEvent(`分析心律為：${rhythm}`);
+  document.getElementById("aedModal").style.display = "none";
+}
+
+
 let beatInterval = null;
 
 function aedAnalyze() {
@@ -516,14 +500,6 @@ function resetLog() {
       btn.disabled = false;
       btn.style.opacity = 1;
     });
-
-    // 重設 Mute 按鈕樣式與狀態
-    const muteBtn = document.getElementById("muteBtn");
-    if (muteBtn) {
-      muteBtn.innerText = "Mute";
-      muteBtn.className = "dark";
-    }
-    isMuted = false;
 
     // 重設藥物與 shock 次數
     epiCount = 0;
