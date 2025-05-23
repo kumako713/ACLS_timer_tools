@@ -44,6 +44,16 @@
       width: 100%;
       max-width: 160px;
     }
+    .modal-button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #eee;
+      color: #333;
+      white-space: nowrap;
+    }
     
     .selected { background-color: black !important; color: white !important; }
     .iron-gray { background-color: #4e4e4e; /* 鐵灰色 */
@@ -255,35 +265,39 @@ background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20
 
   <p style="margin: 6px 0; font-weight: bold;">Pulseless</p>
   <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-    <button onclick="selectRhythm('pVT')">pVT</button>
-    <button onclick="selectRhythm('VF')">VF</button>
-    <button onclick="selectRhythm('PEA')">PEA</button>
-    <button onclick="selectRhythm('Asystole')">Asystole</button>
+    <button class="modal-button" onclick="selectRhythm('pVT')">pVT</button>
+    <button class="modal-button" onclick="selectRhythm('VF')">VF</button>
+    <button class="modal-button" onclick="selectRhythm('PEA')">PEA</button>
+    <button class="modal-button" onclick="selectRhythm('Asystole')">Asystole</button>
   </div>
 
   <p style="margin: 6px 0; font-weight: bold;">Tachycardia</p>
   <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
-    <button onclick="selectRhythm('ST')">ST</button>
-    <button onclick="selectRhythm('PSVT')">PSVT</button>
-    <button onclick="selectRhythm('MAT')">MAT</button>
-    <button onclick="selectRhythm('A-fib')">A-fib</button>
-    <button onclick="selectRhythm('AF')">AF</button>
+    <button class="modal-button" onclick="selectRhythm('ST')">ST</button>
+    <button class="modal-button" onclick="selectRhythm('PSVT')">PSVT</button>
+    <button class="modal-button" onclick="selectRhythm('MAT')">MAT</button>
+    <button class="modal-button" onclick="selectRhythm('A-fib')">A-fib</button>
+    <button class="modal-button" onclick="selectRhythm('AF')">AF</button>
   </div>
   <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-    <button onclick="selectRhythm('VT')">VT</button>
-    <button onclick="selectRhythm('Af+WPW')">Af+WPW</button>
-    <button onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
+    <button class="modal-button" onclick="selectRhythm('VT')">VT</button>
+    <button class="modal-button" onclick="selectRhythm('Af+WPW')">Af+WPW</button>
+    <button class="modal-button" onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
   </div>
 
   <p style="margin: 6px 0; font-weight: bold;">Bradycardia</p>
   <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
-    <button onclick="selectRhythm('SB')">SB</button>
-    <button onclick="selectRhythm('1°AVB')">1°AVB</button>
-    <button onclick="selectRhythm('2°-1AVB')">2°-1AVB</button>
+    <button class="modal-button" onclick="selectRhythm('SB')">SB</button>
+    <button class="modal-button" onclick="selectRhythm('1°AVB')">1°AVB</button>
+    <button class="modal-button" onclick="selectRhythm('2°-1AVB')">2°-1AVB</button>
   </div>
   <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-    <button onclick="selectRhythm('2°-2AVB')">2°-2AVB</button>
-    <button onclick="selectRhythm('3°AVB')">3°AVB</button>
+    <button class="modal-button" onclick="selectRhythm('2°-2AVB')">2°-2AVB</button>
+    <button class="modal-button" onclick="selectRhythm('3°AVB')">3°AVB</button>
+  </div>
+  <!-- 取消按鈕 -->
+  <div style="margin-top: 10px; text-align: center;">
+    <button onclick="document.getElementById('aedModal').style.display = 'none'" style="background-color: #888; color: white; padding: 6px 12px; border: none; border-radius: 6px;">取消</button>
   </div>
 </div>
 
@@ -355,6 +369,9 @@ function recordEvent(event) {
     logText.style.fontWeight = "bold";
     logText.style.padding = "2px 6px";
     logText.style.borderRadius = "4px";
+  } else if (/分析心律為：/.test(event)) {
+    logText.style.color = "red";
+    logText.style.fontWeight = "bold";
   }
 
   const delBtn = document.createElement("button");
