@@ -11,10 +11,6 @@
       margin: 0; padding: 20px;
       display: flex; flex-direction: column; align-items: center;
       background-color: #c0c0c0; /* 銀灰色背景 */
-      background-image: url('logo.PNG');
-      background-repeat: no-repeat;
-      background-position: center bottom;
-      background-size: 30%;
       opacity: 1;
       position: relative;
     }
@@ -87,10 +83,19 @@
       border-radius: 8px;
       text-align: center;
     }
-    
+    #background-logo {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+      opacity: 0.5;
+      z-index: -1;
+      width: 30%;
+      pointer-events: none;
+    }
   </style>
 </head>
-
+<img src="logo.PNG" id="background-logo" />
 <body>
 
 <div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
