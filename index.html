@@ -247,36 +247,40 @@ background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20
 </div>
 
 <!-- AED Rhythm Modal -->
-<div id="aedModal" style="display: none; position: fixed; top: 15%; left: 50%; transform: translateX(-50%);
-background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center;">
-  <p style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">AED Rhythm</p>
-  <p style="font-weight: bold;">Pulseless</p>
-  <div style="margin-bottom: 8px;">
+<div id="aedModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
+background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center; width: 90%; max-width: 500px;">
+  
+  <p style="font-weight: bold; font-size: 20px;">AED Rhythm</p>
+
+  <p style="margin: 6px 0; font-weight: bold;">Pulseless</p>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
     <button onclick="selectRhythm('pVT')">pVT</button>
     <button onclick="selectRhythm('VF')">VF</button>
     <button onclick="selectRhythm('PEA')">PEA</button>
     <button onclick="selectRhythm('Asystole')">Asystole</button>
   </div>
-  <p style="font-weight: bold;">Tachycardia</p>
-  <div style="margin-bottom: 4px;">
+
+  <p style="margin: 6px 0; font-weight: bold;">Tachycardia</p>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
     <button onclick="selectRhythm('ST')">ST</button>
     <button onclick="selectRhythm('PSVT')">PSVT</button>
     <button onclick="selectRhythm('MAT')">MAT</button>
     <button onclick="selectRhythm('A-fib')">A-fib</button>
     <button onclick="selectRhythm('AF')">AF</button>
   </div>
-  <div style="margin-bottom: 8px;">
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
     <button onclick="selectRhythm('VT')">VT</button>
     <button onclick="selectRhythm('Af+WPW')">Af+WPW</button>
     <button onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
   </div>
-  <p style="font-weight: bold;">Bradycardia</p>
-  <div style="margin-bottom: 4px;">
+
+  <p style="margin: 6px 0; font-weight: bold;">Bradycardia</p>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
     <button onclick="selectRhythm('SB')">SB</button>
     <button onclick="selectRhythm('1°AVB')">1°AVB</button>
     <button onclick="selectRhythm('2°-1AVB')">2°-1AVB</button>
   </div>
-  <div style="margin-bottom: 8px;">
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
     <button onclick="selectRhythm('2°-2AVB')">2°-2AVB</button>
     <button onclick="selectRhythm('3°AVB')">3°AVB</button>
   </div>
@@ -324,6 +328,20 @@ function recordEvent(event) {
   const logText = document.createElement("span");
   logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
   logText.style.flex = "1";
+
+  // 加入刪除按鈕（如有）
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "刪除";
+  delBtn.onclick = function () {
+    if (confirm("是否刪除？")) {
+      logContainer.removeChild(logEntry);
+    }
+  };
+
+  logEntry.appendChild(logText);
+  logEntry.appendChild(delBtn);
+  logContainer.appendChild(logEntry);
+}
 
 function selectRhythm(rhythm) {
   lastRhythm = rhythm;
