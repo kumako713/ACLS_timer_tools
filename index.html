@@ -10,6 +10,8 @@
       font-family: Arial, sans-serif;
       margin: 0; padding: 20px;
       display: flex; flex-direction: column; align-items: center;
+      background-color: #2f2f2f; /* 鐵灰背景 */
+      position: relative;
     }
     .center-row {
       display: flex;
@@ -41,6 +43,16 @@
       width: 100%;
       max-width: 160px;
     }
+    #logo-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+      opacity: 0.5;
+      z-index: 0;
+      height: 150px; /* 可視需求調整圖片大小 */
+      pointer-events: none;
+    }
     .selected { background-color: black !important; color: white !important; }
     .iron-gray { background-color: #4e4e4e; /* 鐵灰色 */
                  color: white; border: none; border-radius: 6px; padding: 6px 12px; }
@@ -68,7 +80,7 @@
     }
     #countInfo, #clock {
       font-size: 18px;
-      color: #333;
+      color: #ffffff; /* 白字更清楚 */
     }
     .header-text {
       font-size: 24px;
@@ -78,8 +90,10 @@
       border-radius: 8px;
       text-align: center;
     }
+    
   </style>
 </head>
+<img src="logo.PNG" id="logo-overlay" />
 <body>
 
 <div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
