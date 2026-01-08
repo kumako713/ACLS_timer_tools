@@ -2,13 +2,29 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"/>
   <title>ACLS Timer Tool</title>
   <style>
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+:root{
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --footer-h: 64px; /* 先預留給你底部免責聲明條的高度，可之後微調 */
+}
+
+/* iOS App 常見：自動把字放大，導致整體版面變大 */
+html{
+  -webkit-text-size-adjust: 100%;
+}
     body {
       font-family: Arial, sans-serif;
-      margin: 0; padding: 20px;
+      margin: 0;
+padding-left: 20px;
+padding-right: 20px;
+padding-top: calc(20px + var(--safe-top));
+padding-bottom: calc(20px + var(--footer-h) + var(--safe-bottom));
       display: flex; flex-direction: column; align-items: center;
       background-color: #c0c0c0; /* 銀灰色背景 */
       opacity: 1;
@@ -116,12 +132,48 @@
       background-color: #FF9797 !important;
       color: white !important;
     }
+    #disclaimer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.95);
+  border-top: 1px solid #ddd;
+  padding: 8px 12px calc(8px + var(--safe-bottom)); /* 吃到 iPhone 下巴安全距 */
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 9999;
+  text-align: center;
+}
+    /* 螢幕寬度較小：左右兩欄改成上下單欄 */
+@media (max-width: 420px){
+  .split-row{
+    flex-direction: column;
+    gap: 12px;
+  }
+  .column{
+    width: 100%;
+    align-items: stretch;
+  }
+  button{
+    max-width: none; /* 讓按鈕可以吃滿欄寬 */
+  }
+}
+
+/* 螢幕高度較小：再稍微縮字與間距，避免擠爆 */
+@media (max-height: 760px){
+  .header-text{ font-size: 20px; padding: 8px 16px; }
+  button{ font-size: 12px; padding: 6px 8px; }
+  .split-row{ gap: 16px; }
+}
+    /* iOS: 避免雙擊造成頁面放大（對一般按鈕/輸入區有效） */
+body {
+  touch-action: manipulation;
+}
   </style>
 </head>
 <img src="logo.PNG" id="background-logo" />
 <body>
 
-<div style="position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,0.95);border-top:1px solid #ddd;padding:8px 12px;font-size:12px;line-height:1.4;z-index:9999;text-align:center;">
+<div id="disclaimer">
   免責聲明：本工具供教學與訓練用途，不取代醫療專業判斷與院內標準流程。
 </div>
 
@@ -769,6 +821,20 @@ function extractTime(text) {
   const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);
   return match ? new Date("1970-01-01T" + match[1] + "Z") : null;
 }
+  // iOS: 禁止 double-tap zoom（但不影響一般點擊）
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function (event) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+ // 禁止 pinch zoom
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
 </script>
 
 
