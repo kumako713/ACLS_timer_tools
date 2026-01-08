@@ -141,8 +141,8 @@
  }
 </style>
 </head>
-<img src="logo.PNG" id="background-logo" />
 <body>
+<img src="logo.PNG" id="background-logo" />
 
 <div id="disclaimer">免責聲明：本工具供教學與訓練用途，不取代醫療專業判斷與院內標準流程。</div>
 
@@ -206,7 +206,7 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
  <div style="display: flex; align-items: center; margin-top: 12px;">
  <strong style="font-size: 16px; margin-right: 8px;">BT</strong>
  <input type="text" id="btInput" style="width: 40px; margin-right: 6px;" />
- <span>蚓</span>
+ <span>°C</span>
  </div>
 
  <!--  -->
@@ -546,10 +546,6 @@ function selectEndoFix(cm) {
   recordEvent(`Endo ${endoTubeSize} Fix ${cm} cm`);
   document.getElementById("endoModal").style.display = "none";
 }
-cm`);
- document.getElementById("endoModal").style.display = "none";
-}
-
 function resetLog() {
  if (confirm("")) {
  // 
