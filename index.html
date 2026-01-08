@@ -1,173 +1,150 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>ACLS Timer Tool</title>
-  <style>
-    * { box-sizing: border-box; }
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+ <title>ACLS Timer Tool</title>
+ <style>
+  * { box-sizing: border-box; }
+ html, body { height: 100%; }
+ :root{
+   --safe-top: env(safe-area-inset-top);
+   --safe-bottom: env(safe-area-inset-bottom);
+   --footer-h: 64px;
+ }
+ html{ -webkit-text-size-adjust: 100%; }
+ body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 20px;
+ padding-top: calc(20px + var(--safe-top));
+ padding-bottom: calc(20px + var(--footer-h) + var(--safe-bottom));
+ touch-action: manipulation;
+ display: flex; flex-direction: column; align-items: center;
+ background-color: #c0c0c0; /*  */
+ opacity: 1;
+ position: relative;
+ }
+ .center-row {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ margin-bottom: 15px;
+ gap: 10px;
+ width: 100%;
+ }
+ .split-row {
+ display: flex;
+ justify-content: center;
+ gap: 40px;
+ width: 100%;
+ }
+ .column {
+ width: 45%;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 8px;
+ }
+ button {
+ padding: 6px 10px;
+ font-size: 13px;
+ border: none;
+ border-radius: 6px;
+ cursor: pointer;
+ width: 100%;
+ max-width: 160px;
+ }
+ .modal-button {
+ padding: 6px 12px;
+ font-size: 13px;
+ border: none;
+ border-radius: 6px;
+ cursor: pointer;
+ background-color: #eee;
+ color: #333;
+ white-space: nowrap;
+ flex: 1 1 40%; /* 40% */
+ max-width: 130px; /*  */
+ text-align: center;
+ }
+ 
+ .selected { background-color: black !important; color: white !important; }
+ .iron-gray { background-color: #4e4e4e; /*  */
+ color: white; border: none; border-radius: 6px; padding: 6px 12px; }
+ .red { background-color: #e53935; color: white; }
+ .darkred { background-color: #8B0000; color: white; }
+ .yellow { background-color: #fbc02d; color: black; }
+ .green { background-color: #40e0d0; color: black; }
+ .blue { background-color: #4fc3f7; color: black; }
+ .gray { background-color: #b0bec5; color: black; }
+ .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
+ .brown { background-color: #d2b48c; color: black; }
+ .orange { background-color: orange; color: black; }
+ .dark { background-color: black; color: white; }
+ .light { background-color: white; color: black; border: 1px solid #333; }
+ .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
+ .input-label { font-size: 16px; margin-left: 10px; }
+ #log {
+ margin-top: 20px;
+ white-space: pre-line;
+ border-top: 1px solid #ccc;
+ padding-top: 10px;
+ width: 100%;
+ max-width: 1000px;
+ text-align: left;
+ }
+ #countInfo, #clock {
+ font-size: 18px;
+ color: black;
+ font-weight: bold;
+ }
+ .header-text {
+ font-size: 24px;
+ font-weight: bold;
+ background-color: #e53935;
+ color: white;
+ padding: 10px 20px;
+ border-radius: 8px;
+ text-align: center;
+ }
+ #background-logo {
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%) rotate(90deg);
+ opacity: 0.4;
+ z-index: -1;
+ width: 55%;
+ pointer-events: none;
+ }
+ .male-selected {
+ background-color: #2894FF !important;
+ color: white !important;
+ }
 
-html, body { height: 100%; }
-
-:root{
-  --safe-top: env(safe-area-inset-top);
-  --safe-bottom: env(safe-area-inset-bottom);
-  --footer-h: 64px; /* 底部免責聲明條預留高度，可微調 */
-      touch-action: manipulation;
-    }
-
-html{
-  -webkit-text-size-adjust: 100%;
-}
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-top: calc(20px + var(--safe-top));
-      padding-bottom: calc(20px + var(--footer-h) + var(--safe-bottom));
-      display: flex; flex-direction: column; align-items: center;
-      background-color: #c0c0c0; /* 銀 灰 色 背 景  */
-      opacity: 1;
-      position: relative;
-    }
-    .center-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 15px;
-      gap: 10px;
-      width: 100%;
-    }
-    .split-row {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      width: 100%;
-    }
-    .column {
-      width: 45%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    button {
-      padding: 6px 10px;
-      font-size: 13px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      max-width: 160px;
-    }
-    .modal-button {
-      padding: 6px 12px;
-      font-size: 13px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background-color: #eee;
-      color: #333;
-      white-space: nowrap;
-      flex: 1 1 40%;     /* 讓 每 個 按 鈕 大 約 佔 40%， 可 彈 性 縮 放  */
-      max-width: 130px;  /* 避 免 太 寬 超 出 行  */
-      text-align: center;
-    }
-    
-    .selected { background-color: black !important; color: white !important; }
-    .iron-gray { background-color: #4e4e4e; /* 鐵 灰 色  */
-                 color: white; border: none; border-radius: 6px; padding: 6px 12px; }
-    .red { background-color: #e53935; color: white; }
-    .darkred { background-color: #8B0000; color: white; }
-    .yellow { background-color: #fbc02d; color: black; }
-    .green { background-color: #40e0d0; color: black; }
-    .blue { background-color: #4fc3f7; color: black; }
-    .gray { background-color: #b0bec5; color: black; }
-    .shoke { background-color: #e53935; color: yellow; font-weight: bold; }
-    .brown { background-color: #d2b48c; color: black; }
-    .orange { background-color: orange; color: black; }
-    .dark { background-color: black; color: white; }
-    .light { background-color: white; color: black; border: 1px solid #333; }
-    .toggled { background-color: #555 !important; color: white !important; text-decoration: line-through; }
-    .input-label { font-size: 16px; margin-left: 10px; }
-    #log {
-      margin-top: 20px;
-      white-space: pre-line;
-      border-top: 1px solid #ccc;
-      padding-top: 10px;
-      width: 100%;
-      max-width: 1000px;
-      text-align: left;
-    }
-    #countInfo, #clock {
-      font-size: 18px;
-      color: black;
-      font-weight: bold;
-    }
-    .header-text {
-      font-size: 24px;
-      font-weight: bold;
-      background-color: #e53935;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    #background-logo {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(90deg);
-      opacity: 0.4;
-      z-index: -1;
-      width: 55%;
-      pointer-events: none;
-    }
-    .male-selected {
-      background-color: #2894FF !important;
-      color: white !important;
-    }
-
-    .female-selected {
-      background-color: #FF9797 !important;
-      color: white !important;
-    }
-
-#disclaimer{
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  background: rgba(255,255,255,0.95);
-  border-top: 1px solid #ddd;
-  padding: 8px 12px calc(8px + var(--safe-bottom));
-  font-size: 12px;
-  line-height: 1.4;
-  z-index: 9999;
-  text-align: center;
-}
-
-/* 真的很窄才改成單欄（避免 iPhone 390px 被觸發） */
-@media (max-width: 360px){
-  .split-row{
-    flex-direction: column;
-    gap: 12px;
-  }
-  .column{
-    width: 100% !important;
-  }
-  button{
-    max-width: none !important;
-  }
-}
+ .female-selected {
+ background-color: #FF9797 !important;
+ color: white !important;
+ }
+ 
+ #disclaimer{
+   position: fixed;
+   left: 0; right: 0; bottom: 0;
+   background: rgba(255,255,255,0.95);
+   border-top: 1px solid #ddd;
+   padding: 8px 12px calc(8px + var(--safe-bottom));
+   font-size: 12px;
+   line-height: 1.4;
+   z-index: 9999;
+   text-align: center;
+ }
 </style>
 </head>
 <img src="logo.PNG" id="background-logo" />
 <body>
 
-<div style="position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,0.95);border-top:1px solid #ddd;padding:8px 12px;font-size:12px;line-height:1.4;z-index:9999;text-align:center;">
-  免 責 聲 明 ： 本 工 具 供 教 學 與 訓 練 用 途 ， 不 取 代 醫 療 專 業 判 斷 與 院 內 標 準 流 程 。 
-</div>
+<div id="disclaimer">免責聲明：本工具供教學與訓練用途，不取代醫療專業判斷與院內標準流程。</div>
 
 <div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
 background-color: rgba(0, 0, 0, 0.7); color: yellow; padding: 10px 20px; border-radius: 6px;
@@ -175,184 +152,196 @@ opacity: 0; transition: opacity 0.5s; z-index: 9999; pointer-events: none; font-
 </div>
 
 <audio id="beepSound" src="beep_logic110_1.mp3" loop></audio>
-  
-<!-- 標 題 與 時 間  -->
+ 
+<!--  -->
 <div class="center-row"><div class="header-text">ACLS Timer Tool</div></div>
 <div class="center-row"><div id="clock"></div></div>
 
-<!-- 性 別 與 年 齡  -->
+<!--  -->
 <div class="center-row">
-  <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
-  <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
-  <input type="number" id="ageInput" style="width: 6ch; padding: 2px 4px; margin-right: 2px;" />
-  <span style="font-size: 16px;">Y</span>
+ <button class="gray" id="maleBtn" onclick="toggleGender('male')">Male</button>
+ <button class="gray" id="femaleBtn" onclick="toggleGender('female')">Female</button>
+ <input type="number" id="ageInput" style="width: 6ch; padding: 2px 4px; margin-right: 2px;" />
+ <span style="font-size: 16px;">Y</span>
 </div>
 
-<!-- 給 藥 與 處 置 紀 錄 區 塊  -->
+<!--  -->
 <div class="split-row">
-<!-- 左 邊 欄 位  -->
+<!--  -->
 <div class="column" style="align-items: flex-start;">
-  <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
-  <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
-  <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
-  <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
-<!-- RR 與  HR 同 列 排 列  -->
+ <div><strong>Epinephrine:</strong> <span id="epiCount">0</span></div>
+ <div><strong>Amiodarone:</strong> <span id="amioCount">0</span></div>
+ <div><strong>Lidocaine:</strong> <span id="lidoCount">0</span></div>
+ <div><strong>Shock:</strong> <span id="shockCount">0</span></div>
+<!-- RR  HR  -->
 <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
-  <div style="display: flex; align-items: center;">
-    <strong style="margin-right: 6px;">RR</strong>
-    <input type="text" id="rrInput" style="width: 35px;" />
-  </div>
-  <div style="display: flex; align-items: center;">
-    <strong style="margin-right: 6px;">HR</strong>
-    <input type="text" id="hrInput" style="width: 35px;" />
-  </div>
+ <div style="display: flex; align-items: center;">
+ <strong style="margin-right: 6px;">RR</strong>
+ <input type="text" id="rrInput" style="width: 35px;" />
+ </div>
+ <div style="display: flex; align-items: center;">
+ <strong style="margin-right: 6px;">HR</strong>
+ <input type="text" id="hrInput" style="width: 35px;" />
+ </div>
 </div>
 
-<!-- BP 同 一 列  -->
+<!-- BP  -->
 <div style="display: flex; align-items: center; margin-top: 12px;">
-  <strong style="margin-right: 8px;">BP</strong>
-  <input type="text" id="bpSysInput" style="width: 35px; margin-right: 4px;" />
-  <span>/</span>
-  <input type="text" id="bpDiaInput" style="width: 35px; margin-left: 4px;" />
+ <strong style="margin-right: 8px;">BP</strong>
+ <input type="text" id="bpSysInput" style="width: 35px; margin-right: 4px;" />
+ <span>/</span>
+ <input type="text" id="bpDiaInput" style="width: 35px; margin-left: 4px;" />
 </div>
-  
-  <!-- SpO2 改 為 粗 體 並 換 行 顯 示 輸 入 框 與  % -->
-  <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
-  <strong style="margin-right: 8px;">SpO₂ </strong>
-  <input type="text" id="spo2Left" style="width: 35px;" />
-  <span>→ </span>
-  <input type="text" id="spo2Right" style="width: 35px;" />
-  <span>%</span>
+ 
+ <!-- SpO2  % -->
+ <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+ <strong style="margin-right: 8px;">SpO</strong>
+ <input type="text" id="spo2Left" style="width: 35px;" />
+ <span></span>
+ <input type="text" id="spo2Right" style="width: 35px;" />
+ <span>%</span>
 </div>
 
-  <!-- BT 改 為 粗 體 且 與 輸 入 框 同 行 ， 顯 示 度 C -->
-  <div style="display: flex; align-items: center; margin-top: 12px;">
-    <strong style="font-size: 16px; margin-right: 8px;">BT</strong>
-    <input type="text" id="btInput" style="width: 40px; margin-right: 6px;" />
-    <span>C</span>
-  </div>
+ <!-- BT C -->
+ <div style="display: flex; align-items: center; margin-top: 12px;">
+ <strong style="font-size: 16px; margin-right: 8px;">BT</strong>
+ <input type="text" id="btInput" style="width: 40px; margin-right: 6px;" />
+ <span>蚓</span>
+ </div>
 
-  <!-- 空 白 區 隔  -->
-  <div style="height: 20px;"></div>
+ <!--  -->
+ <div style="height: 20px;"></div>
 </div>
-  <!-- 右 邊 欄 位  -->
-  <div class="column" style="align-items: flex-start;">
-    <label for="chiefComplaint" style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">主 訴 </label>
-    <textarea id="chiefComplaint" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-    
-    <label for="history" style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">病 史 /過 敏 史 </label>
-    <textarea id="history" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+ <!--  -->
+ <div class="column" style="align-items: flex-start;">
+ <label for="chiefComplaint" style="font-weight: bold; font-size: 14px; margin-bottom: 5px;"></label>
+ <textarea id="chiefComplaint" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+ 
+ <label for="history" style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">/</label>
+ <textarea id="history" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
 
-    <label for="otherNotes" style="font-weight: bold; font-size: 14px; margin-top: 10px; margin-bottom: 5px;">其 他 處 置 /說 明 </label>
-    <textarea id="otherNotes" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
-  </div>
+ <label for="otherNotes" style="font-weight: bold; font-size: 14px; margin-top: 10px; margin-bottom: 5px;">/</label>
+ <textarea id="otherNotes" rows="1" style="width: 100%; font-size: 14px; padding: 6px;"></textarea>
+ </div>
 </div>
 <div style="height: 20px;"></div>
 
-<!-- 操 作 按 鈕 與 5H5T -->
+<!-- 5H5T -->
 <div class="split-row">
-  <div class="column">
-    <button class="red" onclick="startCPR()">CPR</button>
-    <button class="red" onclick="aedAnalyze()">AED Analyze</button>
-    <button class="red" onclick="switchCPR()">Switch CPR</button>
-    <button class="shoke" onclick="recordShock()">⚡⚡Shock⚡⚡</button>
-    <button class="darkred" onclick="stopCPR()">Stop CPR</button>
-    <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
-    <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amiodarone</button>
-    <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lidocaine</button>
-    <button class="green" onclick="recordEvent('IV')">I.V.</button>
-    <button class="green" onclick="recordEvent('IO')">I.O.</button>
-    <button class="green" onclick="recordEndoTube()">Endo</button>
-  </div>
-  <div class="column">
-    <button class="brown" onclick="toggleMarker(this)">低 體 溫 </button>
-    <button class="brown" onclick="toggleMarker(this)">缺 氧 </button>
-    <button class="brown" onclick="toggleMarker(this)">低 血 容 </button>
-    <button class="brown" onclick="toggleMarker(this)">酸 鹼 問 題 </button>
-    <button class="brown" onclick="toggleMarker(this)">高 低 血 鉀 </button>
-    <button class="orange" onclick="toggleMarker(this)">冠 狀 動 脈 血 栓 </button>
-    <button class="orange" onclick="toggleMarker(this)">肺 動 脈 栓 塞 </button>
-    <button class="orange" onclick="toggleMarker(this)">中 毒 </button>
-    <button class="orange" onclick="toggleMarker(this)">張 力 性 氣 胸 </button>
-    <button class="orange" onclick="toggleMarker(this)">心 包 膜 填 塞 </button>
-  </div>
+ <div class="column">
+ <button class="red" onclick="startCPR()">CPR</button>
+ <button class="red" onclick="aedAnalyze()">AED Analyze</button>
+ <button class="red" onclick="switchCPR()">Switch CPR</button>
+ <button class="shoke" onclick="recordShock()">Shock</button>
+ <button class="darkred" onclick="stopCPR()">Stop CPR</button>
+ <button class="yellow" onclick="giveEpinephrine()">Epinephrine</button>
+ <button class="yellow" id="amioBtn" onclick="giveAmiodarone()">Amiodarone</button>
+ <button class="yellow" id="lidoBtn" onclick="giveLidocaine()">Lidocaine</button>
+ <button class="green" onclick="recordEvent('IV')">I.V.</button>
+ <button class="green" onclick="recordEvent('IO')">I.O.</button>
+ <button class="green" onclick="recordEndoTube()">Endo</button>
+ </div>
+ <div class="column">
+ <button class="brown" onclick="toggleMarker(this)"></button>
+ <button class="brown" onclick="toggleMarker(this)"></button>
+ <button class="brown" onclick="toggleMarker(this)"></button>
+ <button class="brown" onclick="toggleMarker(this)"></button>
+ <button class="brown" onclick="toggleMarker(this)"></button>
+ <button class="orange" onclick="toggleMarker(this)"></button>
+ <button class="orange" onclick="toggleMarker(this)"></button>
+ <button class="orange" onclick="toggleMarker(this)"></button>
+ <button class="orange" onclick="toggleMarker(this)"></button>
+ <button class="orange" onclick="toggleMarker(this)"></button>
+ </div>
 </div>
-  
-<!-- 空 行  -->
+ 
+<!--  -->
 <div style="height: 20px;"></div>
 
-<!-- ROSC 與  ISBAR -->
+<!-- ROSC  ISBAR -->
 <div class="center-row">
-  <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
-  <button class="gray" onclick="showISBAR()">ISBAR</button>
+ <button class="blue" onclick="recordEvent('ROSC')">ROSC</button>
+ <button class="gray" onclick="showISBAR()">ISBAR</button>
 </div>
 
 <!-- Reset -->
 <div class="center-row">
-  <button class="iron-gray" onclick="resetLog()">Reset</button>
+ <button class="iron-gray" onclick="resetLog()">Reset</button>
 </div>
 
-<!-- 紀 錄 區  -->
+<!--  -->
 <div id="log"></div>
 
-<!-- 這 是  Endo 的 自 訂 彈 出 視 窗  -->
+<!--  Endo  -->
 <div id="endoModal" style="display: none; position: fixed; top: 30%; left: 50%; transform: translateX(-50%);
 background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center;">
-  <p style="margin-bottom: 10px; font-weight: bold;">請 選 擇  Fix 長 度 ： </p>
-  <div style="display: flex; gap: 10px; justify-content: center;">
-    <button onclick="selectEndoFix(19)">19</button>
-    <button onclick="selectEndoFix(20)">20</button>
-    <button onclick="selectEndoFix(21)">21</button>
-    <button onclick="selectEndoFix(22)">22</button>
-    <button onclick="selectEndoFix(23)">23</button>
-  </div>
+ <p style="margin: 0 0 6px; font-weight: bold;">請選擇 Endo 號數：</p>
+ <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 12px;">
+   <button onclick="selectEndoSize(6.5)">6.5</button>
+   <button onclick="selectEndoSize(7.0)">7.0</button>
+   <button onclick="selectEndoSize(7.5)">7.5</button>
+   <button onclick="selectEndoSize(8.0)">8.0</button>
+ </div>
+
+ <p style="margin: 0 0 6px; font-weight: bold;">請選擇 Fix 長度（cm）：</p>
+ <div style="display: flex; gap: 10px; justify-content: center;">
+   <button onclick="selectEndoFix(19)">19</button>
+   <button onclick="selectEndoFix(20)">20</button>
+   <button onclick="selectEndoFix(21)">21</button>
+   <button onclick="selectEndoFix(22)">22</button>
+   <button onclick="selectEndoFix(23)">23</button>
+ </div>
+
+ <div style="margin-top: 12px;">
+   <button onclick="closeEndoModal()" style="background:#888;color:#fff;padding:6px 12px;border:none;border-radius:6px; width:auto; max-width:none;">取消</button>
+ </div>
 </div>
 
 <!-- AED Rhythm Modal -->
 <div id="aedModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
 background-color: white; border: 2px solid #999; border-radius: 8px; padding: 20px; z-index: 9999; text-align: center; width: 90%; max-width: 500px;">
-  
-  <p style="font-weight: bold; font-size: 20px;">AED Rhythm</p>
+ 
+ <p style="font-weight: bold; font-size: 20px;">AED Rhythm</p>
 
-  <p style="margin: 6px 0; font-weight: bold;">Pulseless</p>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-    <button class="modal-button" onclick="selectRhythm('pVT')">pVT</button>
-    <button class="modal-button" onclick="selectRhythm('VF')">VF</button>
-    <button class="modal-button" onclick="selectRhythm('PEA')">PEA</button>
-    <button class="modal-button" onclick="selectRhythm('Asystole')">Asystole</button>
-  </div>
+ <p style="margin: 6px 0; font-weight: bold;">Pulseless</p>
+ <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+ <button class="modal-button" onclick="selectRhythm('pVT')">pVT</button>
+ <button class="modal-button" onclick="selectRhythm('VF')">VF</button>
+ <button class="modal-button" onclick="selectRhythm('PEA')">PEA</button>
+ <button class="modal-button" onclick="selectRhythm('Asystole')">Asystole</button>
+ </div>
 
-  <p style="margin: 6px 0; font-weight: bold;">Tachycardia</p>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
-    <button class="modal-button" onclick="selectRhythm('ST')">ST</button>
-    <button class="modal-button" onclick="selectRhythm('PSVT')">PSVT</button>
-    <button class="modal-button" onclick="selectRhythm('MAT')">MAT</button>
-    <button class="modal-button" onclick="selectRhythm('A-fib')">A-fib</button>
-    <button class="modal-button" onclick="selectRhythm('AF')">AF</button>
-  </div>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-    <button class="modal-button" onclick="selectRhythm('VT')">VT</button>
-    <button class="modal-button" onclick="selectRhythm('Af+WPW')">Af+WPW</button>
-    <button class="modal-button" onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
-  </div>
+ <p style="margin: 6px 0; font-weight: bold;">Tachycardia</p>
+ <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
+ <button class="modal-button" onclick="selectRhythm('ST')">ST</button>
+ <button class="modal-button" onclick="selectRhythm('PSVT')">PSVT</button>
+ <button class="modal-button" onclick="selectRhythm('MAT')">MAT</button>
+ <button class="modal-button" onclick="selectRhythm('A-fib')">A-fib</button>
+ <button class="modal-button" onclick="selectRhythm('AF')">AF</button>
+ </div>
+ <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+ <button class="modal-button" onclick="selectRhythm('VT')">VT</button>
+ <button class="modal-button" onclick="selectRhythm('Af+WPW')">Af+WPW</button>
+ <button class="modal-button" onclick="selectRhythm('Polymorphic VT')">Polymorphic VT</button>
+ </div>
 
-  <p style="margin: 6px 0; font-weight: bold;">Bradycardia</p>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
-    <button class="modal-button" onclick="selectRhythm('SB')">SB</button>
-    <button class="modal-button" onclick="selectRhythm('1AVB')">1AVB</button>
-    <button class="modal-button" onclick="selectRhythm('2-1AVB')">2-1AVB</button>
-  </div>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-    <button class="modal-button" onclick="selectRhythm('2-2AVB')">2-2AVB</button>
-    <button class="modal-button" onclick="selectRhythm('3AVB')">3AVB</button>
-  </div>
-  <!-- 取 消 按 鈕  -->
-  <div style="margin-top: 10px; text-align: center;">
-    <button onclick="document.getElementById('aedModal').style.display = 'none'" style="background-color: #888; color: white; padding: 6px 12px; border: none; border-radius: 6px;">取 消 </button>
-  </div>
+ <p style="margin: 6px 0; font-weight: bold;">Bradycardia</p>
+ <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 6px;">
+ <button class="modal-button" onclick="selectRhythm('SB')">SB</button>
+ <button class="modal-button" onclick="selectRhythm('1蚊VB')">1蚊VB</button>
+ <button class="modal-button" onclick="selectRhythm('2�-1AVB')">2�-1AVB</button>
+ </div>
+ <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+ <button class="modal-button" onclick="selectRhythm('2�-2AVB')">2�-2AVB</button>
+ <button class="modal-button" onclick="selectRhythm('3蚊VB')">3蚊VB</button>
+ </div>
+ <!--  -->
+ <div style="margin-top: 10px; text-align: center;">
+ <button onclick="document.getElementById('aedModal').style.display = 'none'" style="background-color: #888; color: white; padding: 6px 12px; border: none; border-radius: 6px;"></button>
+ </div>
 </div>
 
-<!-- JavaScript 功 能  -->
+<!-- JavaScript  -->
 <script>
 let lastRhythm = null;
 let startTime = null;
@@ -360,473 +349,502 @@ let epiCount = 0, amioCount = 0, lidoCount = 0, shockCount = 0;
 let timers = [];
 let endoFixCm = null;
 
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.innerText = message;
-  toast.style.opacity = "1";
 
-  setTimeout(() => {
-    toast.style.opacity = "0";
-  }, 2000); // 2 秒 後 淡 出 
+  let endoTubeSize = null;
+function showToast(message) {
+ const toast = document.getElementById("toast");
+ toast.innerText = message;
+ toast.style.opacity = "1";
+
+ setTimeout(() => {
+ toast.style.opacity = "0";
+ }, 2000); // 2 
 }
 
 function updateClock() {
-  const now = new Date();
-  document.getElementById("clock").innerText =
-    "Current Time： " + now.toLocaleString('zh-TW', { hour12: false });
+ const now = new Date();
+ document.getElementById("clock").innerText =
+ "Current Time" + now.toLocaleString('zh-TW', { hour12: false });
 }
 setInterval(updateClock, 1000); updateClock();
 
 function recordEvent(event) {
-  const now = new Date();
-  if (!startTime) startTime = now;
-  const elapsed = Math.floor((now - startTime) / 1000);
-  const timeStamp = `${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}`;
-  const nowTime = now.toLocaleTimeString('zh-TW', { hour12: false });
+ const now = new Date();
+ if (!startTime) startTime = now;
+ const elapsed = Math.floor((now - startTime) / 1000);
+ const timeStamp = `${Math.floor(elapsed / 60).toString().padStart(2, '0')}:${(elapsed % 60).toString().padStart(2, '0')}`;
+ const nowTime = now.toLocaleTimeString('zh-TW', { hour12: false });
 
-  const logContainer = document.getElementById("log");
-  const logEntry = document.createElement("div");
-  logEntry.style.display = "flex";
-  logEntry.style.alignItems = "center";
-  logEntry.style.justifyContent = "space-between";
-  logEntry.style.marginBottom = "4px";
+ const logContainer = document.getElementById("log");
+ const logEntry = document.createElement("div");
+ logEntry.style.display = "flex";
+ logEntry.style.alignItems = "center";
+ logEntry.style.justifyContent = "space-between";
+ logEntry.style.marginBottom = "4px";
 
-  const logText = document.createElement("span");
-  logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
-  logText.style.flex = "1";
+ const logText = document.createElement("span");
+ logText.textContent = `[${timeStamp}] [${nowTime}] ${event}`;
+ logText.style.flex = "1";
 
-  // 根 據 內 容 設 樣 式 
-  if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
-    logText.style.backgroundColor = "blue";
-    logText.style.color = "white";
-    logText.style.fontWeight = "bold";
-    logText.style.padding = "2px 6px";
-    logText.style.borderRadius = "4px";
-  } else if (/Shock/.test(event)) {
-    logText.style.backgroundColor = "red";
-    logText.style.color = "yellow";
-    logText.style.fontWeight = "bold";
-    logText.style.padding = "2px 6px";
-    logText.style.borderRadius = "4px";
-  } else if (/^(IV|IO|Endo|Endo Fix \d{2} cm)$/.test(event)) {
-    logText.style.backgroundColor = "green";
-    logText.style.color = "white";
-    logText.style.fontWeight = "bold";
-    logText.style.padding = "2px 6px";
-    logText.style.borderRadius = "4px";
-  } else if (/ROSC/.test(event)) {
-    logText.style.backgroundColor = "#4fc3f7"; // 天 空 藍 
-    logText.style.color = "white";
-    logText.style.fontWeight = "bold";
-    logText.style.padding = "2px 6px";
-    logText.style.borderRadius = "4px";
-  } else if (/分 析 心 律 為 ： /.test(event)) {
-    logText.style.color = "red";
-    logText.style.fontWeight = "bold";
-  }
+ // 
+ if (/Epinephrine|Amiodarone|Lidocaine/.test(event)) {
+ logText.style.backgroundColor = "blue";
+ logText.style.color = "white";
+ logText.style.fontWeight = "bold";
+ logText.style.padding = "2px 6px";
+ logText.style.borderRadius = "4px";
+ } else if (/Shock/.test(event)) {
+ logText.style.backgroundColor = "red";
+ logText.style.color = "yellow";
+ logText.style.fontWeight = "bold";
+ logText.style.padding = "2px 6px";
+ logText.style.borderRadius = "4px";
+ } else if (/^(IV|IO|Endo)/.test(event)) {
+ logText.style.backgroundColor = "green";
+ logText.style.color = "white";
+ logText.style.fontWeight = "bold";
+ logText.style.padding = "2px 6px";
+ logText.style.borderRadius = "4px";
+ } else if (/ROSC/.test(event)) {
+ logText.style.backgroundColor = "#4fc3f7"; // 
+ logText.style.color = "white";
+ logText.style.fontWeight = "bold";
+ logText.style.padding = "2px 6px";
+ logText.style.borderRadius = "4px";
+ } else if (//.test(event)) {
+ logText.style.color = "red";
+ logText.style.fontWeight = "bold";
+ }
 
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "刪 除 ";
-  delBtn.style.marginLeft = "10px";
-  delBtn.style.backgroundColor = "#f44336";
-  delBtn.style.color = "white";
-  delBtn.style.border = "none";
-  delBtn.style.borderRadius = "4px";
-  delBtn.style.cursor = "pointer";
-  delBtn.onclick = function () {
-    if (confirm("是 否 刪 除 ？ ")) {
-      const text = logText.textContent;
-      if (text.includes("Amiodarone")) {
-        amioCount = Math.max(0, amioCount - 1);
-        document.getElementById("amioCount").innerText = amioCount;
-        const btn = document.getElementById("amioBtn");
-        btn.disabled = amioCount >= 2;
-        btn.style.opacity = btn.disabled ? 0.5 : 1;
-      }
-      if (text.includes("Lidocaine")) {
-        lidoCount = Math.max(0, lidoCount - 1);
-        document.getElementById("lidoCount").innerText = lidoCount;
-        const btn = document.getElementById("lidoBtn");
-        btn.disabled = lidoCount >= 2;
-        btn.style.opacity = btn.disabled ? 0.5 : 1;
-      }
-      logContainer.removeChild(logEntry);
-      updateCountsFromLog();
-    }
-  };
+ const delBtn = document.createElement("button");
+ delBtn.textContent = "";
+ delBtn.style.marginLeft = "10px";
+ delBtn.style.backgroundColor = "#f44336";
+ delBtn.style.color = "white";
+ delBtn.style.border = "none";
+ delBtn.style.borderRadius = "4px";
+ delBtn.style.cursor = "pointer";
+ delBtn.onclick = function () {
+ if (confirm("")) {
+ const text = logText.textContent;
+ if (text.includes("Amiodarone")) {
+ amioCount = Math.max(0, amioCount - 1);
+ document.getElementById("amioCount").innerText = amioCount;
+ const btn = document.getElementById("amioBtn");
+ btn.disabled = amioCount >= 2;
+ btn.style.opacity = btn.disabled ? 0.5 : 1;
+ }
+ if (text.includes("Lidocaine")) {
+ lidoCount = Math.max(0, lidoCount - 1);
+ document.getElementById("lidoCount").innerText = lidoCount;
+ const btn = document.getElementById("lidoBtn");
+ btn.disabled = lidoCount >= 2;
+ btn.style.opacity = btn.disabled ? 0.5 : 1;
+ }
+ logContainer.removeChild(logEntry);
+ updateCountsFromLog();
+ }
+ };
 
-  logEntry.appendChild(logText);
-  logEntry.appendChild(delBtn);
-  logContainer.appendChild(logEntry);
-  showToast(event);
+ logEntry.appendChild(logText);
+ logEntry.appendChild(delBtn);
+ logContainer.appendChild(logEntry);
+ showToast(event);
 }
 
 function selectRhythm(rhythm) {
-  lastRhythm = rhythm;
-  recordEvent(`分 析 心 律 為 ： ${rhythm}`);
-  document.getElementById("aedModal").style.display = "none";
+ lastRhythm = rhythm;
+ recordEvent(`${rhythm}`);
+ document.getElementById("aedModal").style.display = "none";
 }
 
 
 let beatInterval = null;
 
 function aedAnalyze() {
-  recordEvent("AED 分 析 中 ");
-  showToast("AED 10秒 分 析 中 ");
+ recordEvent("AED &&");
+ showToast("AED 10&&");
 
-  // 保 留 提 示 
-  timers.push(setTimeout(() => alert("   30秒 後 分 析 心 律 "), 90000));
-  timers.push(setTimeout(() => alert("   10秒 後 分 析 心 律 "), 110000));
+ // 
+ timers.push(setTimeout(() => alert(" 30"), 90000));
+ timers.push(setTimeout(() => alert(" 10"), 110000));
 
-  // 新 增 心 律 分 析 視 窗 彈 出 
-  document.getElementById("aedModal").style.display = "block";
+ // 
+ document.getElementById("aedModal").style.display = "block";
 }
 
 function switchCPR() {
-  recordEvent("CPR 換 人 ");
-  setTimeout(() => alert("2分 鐘 已 到 ， 請 考 慮  CPR 換 人 "), 120000);
+ recordEvent("CPR ");
+ setTimeout(() => alert("2 CPR "), 120000);
 }
 function giveEpinephrine() {
-  alert("1mg IVP");
-  recordEvent("Epinephrine 1mg 給 藥 ");
-  document.getElementById("epiCount").innerText = ++epiCount;
-  updateCountsFromLog();
+ alert("1mg IVP");
+ recordEvent("Epinephrine 1mg ");
+ document.getElementById("epiCount").innerText = ++epiCount;
+ updateCountsFromLog();
 }
 function giveAmiodarone() {
-  if (++amioCount === 1) {
-    alert("300mg IVP (考 慮 Lidocaine?)");
-    recordEvent("Amiodarone 300mg 給 藥 ");
-    updateCountsFromLog();  // ✅  加 在 這 裡 
-  } else if (amioCount === 2) {
-    alert("150mg IVP");
-    recordEvent("Amiodarone 150mg 給 藥 ");
-    updateCountsFromLog();  // ✅  加 在 這 裡 
-    const btn = document.getElementById("amioBtn");
-    btn.disabled = true;
-    btn.style.opacity = 0.5;
-  }
-  document.getElementById("amioCount").innerText = amioCount;
+ if (++amioCount === 1) {
+ alert("300mg IVP (Lidocaine?)");
+ recordEvent("Amiodarone 300mg ");
+ updateCountsFromLog(); //  
+ } else if (amioCount === 2) {
+ alert("150mg IVP");
+ recordEvent("Amiodarone 150mg ");
+ updateCountsFromLog(); //  
+ const btn = document.getElementById("amioBtn");
+ btn.disabled = true;
+ btn.style.opacity = 0.5;
+ }
+ document.getElementById("amioCount").innerText = amioCount;
 }
-  
+ 
 function giveLidocaine() {
-  if (++lidoCount === 1) {
-    alert("1-1.5mg/kg IVP");
-    recordEvent("Lidocaine 劑 量 (?)mg");
-    updateCountsFromLog();  // ✅  加 在 這 
-  } else if (lidoCount === 2) {
-    alert("0.5-0.75mg/kg IVP");
-    recordEvent("Lidocaine 劑 量 (?)mg");
-    updateCountsFromLog();  // ✅  加 在 這 
-    const btn = document.getElementById("lidoBtn");
-    btn.disabled = true;
-    btn.style.opacity = 0.5;
-  }
-  document.getElementById("lidoCount").innerText = lidoCount;
+ if (++lidoCount === 1) {
+ alert("1-1.5mg/kg IVP");
+ recordEvent("Lidocaine (?)mg");
+ updateCountsFromLog(); //  
+ } else if (lidoCount === 2) {
+ alert("0.5-0.75mg/kg IVP");
+ recordEvent("Lidocaine (?)mg");
+ updateCountsFromLog(); //  
+ const btn = document.getElementById("lidoBtn");
+ btn.disabled = true;
+ btn.style.opacity = 0.5;
+ }
+ document.getElementById("lidoCount").innerText = lidoCount;
 }
 
 function recordShock() {
-  recordEvent("Shock!");
-  document.getElementById("shockCount").innerText = ++shockCount;
-  updateCountsFromLog();
+ recordEvent("Shock!");
+ document.getElementById("shockCount").innerText = ++shockCount;
+ updateCountsFromLog();
 }
 function recordEndoTube() {
+  // 每次開啟都先清掉上一次選擇，避免誤用舊資料
+  endoTubeSize = null;
+  endoFixCm = null;
+
   document.getElementById("endoModal").style.display = "block";
 }
 
-function selectEndoFix(cm) {
-  endoFixCm = cm;
-  recordEvent(`Endo Fix ${cm} cm`);
+function closeEndoModal() {
   document.getElementById("endoModal").style.display = "none";
 }
 
-function resetLog() {
-  if (confirm("確 定 要 清 除 所 有 紀 錄 ？ ")) {
-    // 清 除 紀 錄 區 
-    document.getElementById("log").innerHTML = "";
+function selectEndoSize(size) {
+  endoTubeSize = size;
+  showToast(`Endo 號數：${size}`);
+}
 
-    // 清 除 輸 入 欄 位 
-    const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
-    inputs.forEach(input => input.value = "");
-
-    // 停 止 所 有 計 時 器 
-    if (timers && Array.isArray(timers)) {
-      timers.forEach(t => clearTimeout(t) || clearInterval(t));
-    }
-    timers = [];
-
-    // 停 止 聲 音 
-    stopBeepLoop();
-
-    // 清 除 起 始 時 間 
-    startTime = null;
-
-    // 還 原 按 鈕 樣 式 
-    const toggleButtons = document.querySelectorAll(".toggled, .selected");
-    toggleButtons.forEach(btn => {
-      btn.classList.remove("toggled");
-      btn.classList.remove("selected");
-      btn.disabled = false;
-      btn.style.opacity = 1;
-    });
-
-    // 重 設 藥 物 與  shock 次 數 
-    epiCount = 0;
-    amioCount = 0;
-    lidoCount = 0;
-    shockCount = 0;
-    document.getElementById("epiCount").innerText = "0";
-    document.getElementById("amioCount").innerText = "0";
-    document.getElementById("lidoCount").innerText = "0";
-    document.getElementById("shockCount").innerText = "0";
+function selectEndoFix(cm) {
+  if (endoTubeSize == null) {
+    showToast("請先選 Endo 號數");
+    return;
   }
+  endoFixCm = cm;
+  recordEvent(`Endo ${endoTubeSize} Fix ${cm} cm`);
+  document.getElementById("endoModal").style.display = "none";
+}
+cm`);
+ document.getElementById("endoModal").style.display = "none";
+}
+
+function resetLog() {
+ if (confirm("")) {
+ // 
+ document.getElementById("log").innerHTML = "";
+
+ // 
+ const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
+ inputs.forEach(input => input.value = "");
+
+ // 
+ if (timers && Array.isArray(timers)) {
+ timers.forEach(t => clearTimeout(t) || clearInterval(t));
+ }
+ timers = [];
+
+ // 
+ stopBeepLoop();
+
+ // 
+ startTime = null;
+
+    // 重設 Endo 記錄
+    endoTubeSize = null;
+    endoFixCm = null;
+
+ // 
+ const toggleButtons = document.querySelectorAll(".toggled, .selected");
+ toggleButtons.forEach(btn => {
+ btn.classList.remove("toggled");
+ btn.classList.remove("selected");
+ btn.disabled = false;
+ btn.style.opacity = 1;
+ });
+
+ //  shock 
+ epiCount = 0;
+ amioCount = 0;
+ lidoCount = 0;
+ shockCount = 0;
+ document.getElementById("epiCount").innerText = "0";
+ document.getElementById("amioCount").innerText = "0";
+ document.getElementById("lidoCount").innerText = "0";
+ document.getElementById("shockCount").innerText = "0";
+ }
 }
 
 function updateCountsFromLog() {
-  const logs = document.querySelectorAll("#log div span");
-  let epi = 0, amio = 0, lido = 0, shock = 0;
+ const logs = document.querySelectorAll("#log div span");
+ let epi = 0, amio = 0, lido = 0, shock = 0;
 
-  logs.forEach(span => {
-    const text = span.textContent;
-    if (text.includes("Epinephrine")) epi++;
-    if (text.includes("Amiodarone")) amio++;
-    if (text.includes("Lidocaine")) lido++;
-    if (text.includes("Shock!")) shock++;
-  });
+ logs.forEach(span => {
+ const text = span.textContent;
+ if (text.includes("Epinephrine")) epi++;
+ if (text.includes("Amiodarone")) amio++;
+ if (text.includes("Lidocaine")) lido++;
+ if (text.includes("Shock!")) shock++;
+ });
 
-  epiCount = epi;
-  amioCount = amio;
-  lidoCount = lido;
-  shockCount = shock;
+ epiCount = epi;
+ amioCount = amio;
+ lidoCount = lido;
+ shockCount = shock;
 
-  document.getElementById("epiCount").innerText = epiCount;
-  document.getElementById("amioCount").innerText = amioCount;
-  document.getElementById("lidoCount").innerText = lidoCount;
-  document.getElementById("shockCount").innerText = shockCount;
+ document.getElementById("epiCount").innerText = epiCount;
+ document.getElementById("amioCount").innerText = amioCount;
+ document.getElementById("lidoCount").innerText = lidoCount;
+ document.getElementById("shockCount").innerText = shockCount;
 
-  const amioBtn = document.getElementById("amioBtn");
-  const lidoBtn = document.getElementById("lidoBtn");
+ const amioBtn = document.getElementById("amioBtn");
+ const lidoBtn = document.getElementById("lidoBtn");
 
-  if (amioBtn) {
-    amioBtn.disabled = amioCount >= 2;
-    amioBtn.style.opacity = amioBtn.disabled ? 0.5 : 1;
-  }
-  if (lidoBtn) {
-    lidoBtn.disabled = lidoCount >= 2;
-    lidoBtn.style.opacity = lidoBtn.disabled ? 0.5 : 1;
-  }
+ if (amioBtn) {
+ amioBtn.disabled = amioCount >= 2;
+ amioBtn.style.opacity = amioBtn.disabled ? 0.5 : 1;
+ }
+ if (lidoBtn) {
+ lidoBtn.disabled = lidoCount >= 2;
+ lidoBtn.style.opacity = lidoBtn.disabled ? 0.5 : 1;
+ }
 }
 
 function toggleGender(selected) {
-  const maleBtn = document.getElementById("maleBtn");
-  const femaleBtn = document.getElementById("femaleBtn");
+ const maleBtn = document.getElementById("maleBtn");
+ const femaleBtn = document.getElementById("femaleBtn");
 
-  if (selected === "male") {
-    if (maleBtn.classList.contains("male-selected")) {
-      maleBtn.classList.remove("male-selected");
-    } else {
-      maleBtn.classList.add("male-selected");
-      femaleBtn.classList.remove("female-selected");
-    }
-  } else {
-    if (femaleBtn.classList.contains("female-selected")) {
-      femaleBtn.classList.remove("female-selected");
-    } else {
-      femaleBtn.classList.add("female-selected");
-      maleBtn.classList.remove("male-selected");
-    }
-  }
+ if (selected === "male") {
+ if (maleBtn.classList.contains("male-selected")) {
+ maleBtn.classList.remove("male-selected");
+ } else {
+ maleBtn.classList.add("male-selected");
+ femaleBtn.classList.remove("female-selected");
+ }
+ } else {
+ if (femaleBtn.classList.contains("female-selected")) {
+ femaleBtn.classList.remove("female-selected");
+ } else {
+ femaleBtn.classList.add("female-selected");
+ maleBtn.classList.remove("male-selected");
+ }
+ }
 }
 function toggleMarker(btn) {
-  btn.classList.toggle('toggled');
+ btn.classList.toggle('toggled');
 }
 
 
 function playBeep() {
-  const beep = document.getElementById("beepSound");
-  beep.currentTime = 0;
-  beep.play();
+ const beep = document.getElementById("beepSound");
+ beep.currentTime = 0;
+ beep.play();
 }
-  
+ 
 function startBeepLoop() {
-  const beep = document.getElementById("beepSound");
-  beep.volume = 1;
-  beep.currentTime = 0;
-  beep.play();
+ const beep = document.getElementById("beepSound");
+ beep.volume = 1;
+ beep.currentTime = 0;
+ beep.play();
 }
 
 
 function stopBeepLoop() {
-  const beep = document.getElementById("beepSound");
-  beep.pause();
-  beep.currentTime = 0;
-  beep.volume = 0;
+ const beep = document.getElementById("beepSound");
+ beep.pause();
+ beep.currentTime = 0;
+ beep.volume = 0;
 }
 function startCPR() {
-  recordEvent("CPR 開 始 ");
-  if (!startTime) startTime = new Date();
+ recordEvent("CPR ");
+ if (!startTime) startTime = new Date();
 
-  timers.push(setInterval(() => alert("提 醒 ： CPR 執 行 中 ， 請 考 慮  5H5T？ "), 120000));
+ timers.push(setInterval(() => alert("CPR  5H5T"), 120000));
 
-  setTimeout(() => {
-    startBeepLoop(); //    延 遲  1 秒 播 放 循 環 音 效 
-  }, 1000);
+ setTimeout(() => {
+ startBeepLoop(); //   1 
+ }, 1000);
 }
 
 
 function stopCPR() {
-  recordEvent("CPR 停 止 ");
-  timers.forEach(t => clearTimeout(t) || clearInterval(t));
-  timers = [];
-  stopBeepLoop(); //    停 止 音 效 播 放 
+ recordEvent("CPR ");
+ timers.forEach(t => clearTimeout(t) || clearInterval(t));
+ timers = [];
+ stopBeepLoop(); //  
 }
 function showISBAR() {
-  const chief = document.getElementById("chiefComplaint")?.value || "（ 未 填 寫 ） ";
-  const history = document.getElementById("history")?.value || "（ 未 填 寫 ） ";
-  const otherNotes = document.getElementById("otherNotes")?.value || "（ 未 填 寫 ） ";
-  const age = document.getElementById("ageInput")?.value || "？ ";
-  let gender = "（ 未 選 ） ";
-  if (document.getElementById("maleBtn").classList.contains("male-selected")) {
-    gender = "男 性 ";
-  } else if (document.getElementById("femaleBtn").classList.contains("female-selected")) {
-    gender = "女 性 ";
-  }
-  const spo2Left = document.querySelector("#spo2Left")?.value || "??";
-  const spo2Right = document.querySelector("#spo2Right")?.value || "??";
-  const btValue = document.getElementById("btInput")?.value || "??";
-  const rrValue = document.getElementById("rrInput")?.value || "未 填 ";
-  const hrValue = document.getElementById("hrInput")?.value || "未 填 ";
-  const bpSys = document.getElementById("bpSysInput")?.value || "??";
-  const bpDia = document.getElementById("bpDiaInput")?.value || "??";
+ const chief = document.getElementById("chiefComplaint")?.value || "";
+ const history = document.getElementById("history")?.value || "";
+ const otherNotes = document.getElementById("otherNotes")?.value || "";
+ const age = document.getElementById("ageInput")?.value || "";
+ let gender = "";
+ if (document.getElementById("maleBtn").classList.contains("male-selected")) {
+ gender = "";
+ } else if (document.getElementById("femaleBtn").classList.contains("female-selected")) {
+ gender = "";
+ }
+ const spo2Left = document.querySelector("#spo2Left")?.value || "??";
+ const spo2Right = document.querySelector("#spo2Right")?.value || "??";
+ const btValue = document.getElementById("btInput")?.value || "??";
+ const rrValue = document.getElementById("rrInput")?.value || "";
+ const hrValue = document.getElementById("hrInput")?.value || "";
+ const bpSys = document.getElementById("bpSysInput")?.value || "??";
+ const bpDia = document.getElementById("bpDiaInput")?.value || "??";
 
 
-  let cprStart = null, cprStop = null;
-  const logs = document.querySelectorAll("#log div span");
-  logs.forEach(span => {
-    const text = span.textContent;
-    if (text.includes("CPR 開 始 ")) cprStart = extractTime(text);
-    if (text.includes("CPR 停 止 ")) cprStop = extractTime(text);
-  });
-  let roscTime = "尚 無 紀 錄 ";
-  for (let i = 0; i < logs.length; i++) {
-    const text = logs[i].textContent;
-    if (text.includes("ROSC")) {
-      const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);  // 抓  current time
-      if (match) {
-        roscTime = match[1];
-      }
-      break;
-  }
+ let cprStart = null, cprStop = null;
+ const logs = document.querySelectorAll("#log div span");
+ logs.forEach(span => {
+ const text = span.textContent;
+ if (text.includes("CPR ")) cprStart = extractTime(text);
+ if (text.includes("CPR ")) cprStop = extractTime(text);
+ });
+ let roscTime = "";
+ for (let i = 0; i < logs.length; i++) {
+ const text = logs[i].textContent;
+ if (text.includes("ROSC")) {
+ const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/); //  current time
+ if (match) {
+ roscTime = match[1];
+ }
+ break;
+ }
 }
-  let cprDuration = "（ 尚 未 結 束 ） ";
-  if (cprStart && cprStop) {
-    const mins = Math.floor((cprStop - cprStart) / 60000);
-    cprDuration = `${mins} 分 鐘 `;
-  }
+ let cprDuration = "";
+ if (cprStart && cprStop) {
+ const mins = Math.floor((cprStop - cprStart) / 60000);
+ cprDuration = `${mins} `;
+ }
 
-  const medStats = {};
-  logs.forEach(span => {
-    const text = span.textContent;
-    const match = text.match(/\[(\d{2}:\d{2}:\d{2})\] .*?(Epinephrine|Amiodarone|Lidocaine).*?給 藥 /);
-    if (match) {
-      const [_, time, name] = match;
-      if (!medStats[name]) medStats[name] = { count: 0, last: null };
-      medStats[name].count++;
-      medStats[name].last = time;
-    }
-  });
+ const medStats = {};
+ logs.forEach(span => {
+ const text = span.textContent;
+ const match = text.match(/\[(\d{2}:\d{2}:\d{2})\] .*?(Epinephrine|Amiodarone|Lidocaine).*?/);
+ if (match) {
+ const [_, time, name] = match;
+ if (!medStats[name]) medStats[name] = { count: 0, last: null };
+ medStats[name].count++;
+ medStats[name].last = time;
+ }
+ });
 
-  let lastMedLine = "";
+ let lastMedLine = "";
 for (let i = logs.length - 1; i >= 0; i--) {
-  const text = logs[i].textContent;
-  if (/給 藥 /.test(text)) {
-    const match = text.match(/(Epinephrine|Amiodarone|Lidocaine).*?給 藥 .*?/);
-    if (match) {
-      const med = match[1];
-      const dose = text.split("給 藥 ")[0].split(med)[1].trim();
-      const currentTime = new Date().toLocaleTimeString('zh-TW', { hour12: false });
-      lastMedLine = `${currentTime} ${med}${dose ? " " + dose : ""}`;
-      break;
-    }
-  }
+ const text = logs[i].textContent;
+ if (//.test(text)) {
+ const match = text.match(/(Epinephrine|Amiodarone|Lidocaine).*?.*?/);
+ if (match) {
+ const med = match[1];
+ const dose = text.split("")[0].split(med)[1].trim();
+ const currentTime = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+ lastMedLine = `${currentTime} ${med}${dose ? " " + dose : ""}`;
+ break;
+ }
+ }
 }
 
-  let endoInfo = "尚 無 紀 錄 ";
+ let endoInfo = "";
 for (let i = logs.length - 1; i >= 0; i--) {
-  const text = logs[i].textContent;
-  const match = text.match(/Fix (\d{2})cm/);
-  if (match) {
-    endoInfo = `Fix ${match[1]}cm`;
-    break;
-  }
+ const text = logs[i].textContent;
+ const match = text.match(/Fix (\d{2})cm/);
+ if (match) {
+ endoInfo = `Fix ${match[1]}cm`;
+ break;
+ }
 }
  const aText = `A:
- EKG： ${lastRhythm || "??"}
+ EKG${lastRhythm || "??"}
  
- 給 予 藥 物 
- Epinephrine： ${medStats.Epinephrine?.count || 0} 次 
- Amiodarone： ${medStats.Amiodarone?.count || 0} 次 
- Lidocaine： ${medStats.Lidocaine?.count || 0} 次 
+ 
+ Epinephrine${medStats.Epinephrine?.count || 0} 
+ Amiodarone${medStats.Amiodarone?.count || 0} 
+ Lidocaine${medStats.Lidocaine?.count || 0} 
 
- Shock 次 數 ： ${document.getElementById("shockCount").innerText} 次 
+ Shock ${document.getElementById("shockCount").innerText} 
 
- Endo(號 數 )： ${endoFixCm ? endoFixCm + " cm" : "??"}
+ Endo #${endoTubeSize || "??"} Fix ${endoFixCm ? endoFixCm + " cm" : "??"}
 
- 最 後 一 次 給 藥 
+ 
  ${lastMedLine || "??"}
 
- 其 他 處 置 /藥 物 ： ${otherNotes}
+ /${otherNotes}
  `;
 
-  const isbar = `
-【 ISBAR 彙 整 】 
-I： 
-醫 師 好 ， 我 是 署 P91。 
+ const isbar = `
+ISBAR 
+I
+P91
 
-S： 
-${gender}患 者  ${age} 歲 ， ${chief}， RR ${rrValue}， HR ${hrValue}， BP ${bpSys}/${bpDia}， SpO₂  ${spo2Left}→ ${spo2Right}%， CPR 已 持 續  ${cprDuration}， ROSC 時 間 ： ${roscTime}
-。 
+S
+${gender} ${age} ${chief}RR ${rrValue}HR ${hrValue}BP ${bpSys}/${bpDia}SpO ${spo2Left}${spo2Right}%CPR  ${cprDuration}ROSC ${roscTime}
 
-B： 
-病 史 /過 敏 史 ：  ${history}。 
+
+B
+/ ${history}
 
 ${aText}
 
-R： 
-建 議 ： (請 EMT自 行 評 估 匯 報 )。 
-  `;
-  // 取 得 下 方  log 所 有 紀 錄 內 容 
+R
+(EMT)
+ `;
+ //  log 
 const logText = Array.from(document.querySelectorAll("#log div span"))
-  .map(span => span.textContent)
-  .join("\n");
+ .map(span => span.textContent)
+ .join("\n");
 
-// 合 併  ISBAR 與 處 置 紀 錄 
-const fullText = `${isbar}\n\n【 處 置 紀 錄 】 \n${logText}`;
+//  ISBAR 
+const fullText = `${isbar}\n\n\n${logText}`;
 
-// 複 製 整 合 後 文 字 
+// 
 navigator.clipboard.writeText(fullText);
 
-// 僅 彈 出  ISBAR 本 體 
+//  ISBAR 
 alert(isbar);
 }
 
 function extractTime(text) {
-  const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);
-  return match ? new Date("1970-01-01T" + match[1] + "Z") : null;
+ const match = text.match(/\[(\d{2}:\d{2}:\d{2})\]/);
+ return match ? new Date("1970-01-01T" + match[1] + "Z") : null;
 }
 </script>
 
 
 
+
 <script>
-  // iOS: 禁止 double-tap zoom（不影響一般點擊）
-  let __lastTouchEnd = 0;
-  document.addEventListener('touchend', function (event) {
-    const now = Date.now();
-    if (now - __lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
-    __lastTouchEnd = now;
-  }, { passive: false });
+  // iOS/WKWebView: prevent double-tap zoom (keeps normal tapping)
+  (function(){
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+  })();
 </script>
 
 </body>
